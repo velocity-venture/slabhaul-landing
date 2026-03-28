@@ -13,13 +13,12 @@
   <meta property="og:description" content="Real-time lake conditions, thermocline predictions, brush pile locations, and solunar forecasts. Built by crappie fishermen, for crappie fishermen.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://slabhaul.ai">
-
   <meta property="og:image" content="https://slabhaul.ai/assets/images/og-image.png">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="SlabHaul — The Crappie Fishing Intelligence App">
-  <meta name="twitter:description" content="The only fishing app built 100% for crappie fishermen. Real-time data, attractor maps, and AI-powered insights.">
+  <meta name="twitter:description" content="The only fishing app built 100% for crappie fishermen. Real-time data, attractor maps, and solunar forecasts.">
   <meta name="twitter:image" content="https://slabhaul.ai/assets/images/og-image.png">
 
   <!-- Favicons -->
@@ -28,7 +27,7 @@
   <link rel="icon" href="/favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="manifest" href="/site.webmanifest">
-  <meta name="theme-color" content="#0a1628">
+  <meta name="theme-color" content="#F5F0EB">
 
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
@@ -37,8 +36,8 @@
     "@type": "SoftwareApplication",
     "name": "SlabHaul",
     "applicationCategory": "SportsApplication",
-    "operatingSystem": "iOS",
-    "description": "The crappie fishing intelligence app. Real-time lake conditions, thermocline predictions, attractor maps, and AI-powered insights.",
+    "operatingSystem": "iOS, Android, Web",
+    "description": "The crappie fishing intelligence app. Real-time lake conditions, thermocline predictions, attractor maps, and solunar forecasts.",
     "url": "https://slabhaul.ai",
     "author": {
       "@type": "Organization",
@@ -60,2213 +59,573 @@
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   </script>
 
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            stone: {
+              50: '#FAFAF9',
+              100: '#F5F0EB',
+              800: '#292524',
+              900: '#1C1917',
+            },
+            copper: {
+              DEFAULT: '#C2703E',
+              light: '#D4915F',
+              dark: '#A85C2E',
+            },
+            slate: {
+              DEFAULT: '#64748B',
+              light: '#94A3B8',
+            },
+            sage: {
+              DEFAULT: '#6B8F71',
+              light: '#8BAF8F',
+            },
+          },
+          fontFamily: {
+            serif: ['Playfair Display', 'Georgia', 'serif'],
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
   <style>
-    :root {
-      --bg: #0a1628;
-      --bg-deep: #060f1d;
-      --surface: #111d32;
-      --surface-hover: #162440;
-      --primary: #00d4aa;
-      --primary-dim: rgba(0, 212, 170, 0.15);
-      --primary-glow: rgba(0, 212, 170, 0.3);
-      --accent: #3b82f6;
-      --accent-dim: rgba(59, 130, 246, 0.15);
-      --text: #e2e8f0;
-      --text-bright: #f8fafc;
-      --muted: #64748b;
-      --border: rgba(255,255,255,0.08);
-      --border-light: rgba(255,255,255,0.12);
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
     html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', system-ui, sans-serif; }
 
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
-
-    /* ===================== HEADER / NAV ===================== */
-    header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      padding: 0;
-      transition: background 0.3s, box-shadow 0.3s, padding 0.3s;
-    }
-    header.scrolled {
-      background: rgba(10, 22, 40, 0.95);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      box-shadow: 0 1px 0 var(--border);
-    }
-    .header-inner {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px 0;
-      transition: padding 0.3s;
-    }
-    header.scrolled .header-inner { padding: 14px 0; }
-
-    .logo {
-      font-size: 1.6rem;
-      font-weight: 900;
-      color: var(--primary);
-      text-decoration: none;
-      letter-spacing: -0.5px;
-    }
-    .logo span { color: var(--text-bright); }
-
-    nav { display: flex; align-items: center; gap: 8px; }
-    nav a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 500;
-      padding: 8px 16px;
-      border-radius: 8px;
-      transition: color 0.2s, background 0.2s;
-    }
-    nav a:hover { color: var(--text); background: rgba(255,255,255,0.05); }
-    nav a.active { color: var(--primary); }
-
-    .nav-cta {
-      background: var(--primary) !important;
-      color: var(--bg) !important;
-      font-weight: 700 !important;
-      padding: 10px 20px !important;
-      margin-left: 8px;
-    }
-    .nav-cta:hover { opacity: 0.9; transform: translateY(-1px); }
-    .nav-login {
-      color: var(--primary) !important;
-      border: 1px solid rgba(0, 212, 170, 0.3);
-      font-weight: 600 !important;
-    }
-    .nav-login:hover { background: rgba(0, 212, 170, 0.1) !important; }
-
-    .mobile-toggle {
-      display: none;
-      background: none;
-      border: none;
-      color: var(--text);
-      font-size: 1.5rem;
-      cursor: pointer;
-      padding: 8px;
-    }
-
-    /* ===================== HERO ===================== */
-    .hero {
-      padding: 160px 0 100px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: -200px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 800px;
-      height: 800px;
-      background: radial-gradient(circle, var(--primary-dim) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .hero-content { position: relative; z-index: 1; }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--primary-dim);
-      border: 1px solid rgba(0, 212, 170, 0.3);
-      color: var(--primary);
-      padding: 8px 20px;
-      border-radius: 100px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin-bottom: 32px;
-      animation: fadeInDown 0.6s ease;
-    }
-    .hero-badge .pulse {
-      width: 8px;
-      height: 8px;
-      background: var(--primary);
-      border-radius: 50%;
-      animation: pulse 2s infinite;
-    }
-
-    .hero h1 {
-      font-size: clamp(2.8rem, 7vw, 4.5rem);
-      font-weight: 900;
-      line-height: 1.05;
-      margin-bottom: 24px;
-      letter-spacing: -1.5px;
-      animation: fadeInUp 0.6s ease 0.1s both;
-    }
-    .hero h1 .highlight {
-      background: linear-gradient(135deg, var(--primary), #00e8bb);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .hero-subtitle {
-      font-size: 1.25rem;
-      color: var(--muted);
-      max-width: 640px;
-      margin: 0 auto 20px;
-      animation: fadeInUp 0.6s ease 0.2s both;
-    }
-
-    .hero-differentiator {
-      font-size: 1rem;
-      color: var(--primary);
-      font-weight: 600;
-      margin-bottom: 40px;
-      animation: fadeInUp 0.6s ease 0.25s both;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 16px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-bottom: 24px;
-      animation: fadeInUp 0.6s ease 0.3s both;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 16px 32px;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-weight: 700;
-      text-decoration: none;
-      cursor: pointer;
-      border: none;
-      transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
-    }
-    .btn:hover { transform: translateY(-2px); }
-    .btn:active { transform: translateY(0); }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--primary), #00e8bb);
-      color: var(--bg);
-      box-shadow: 0 4px 24px rgba(0, 212, 170, 0.3);
-    }
-    .btn-primary:hover { box-shadow: 0 8px 32px rgba(0, 212, 170, 0.4); }
-
-    .btn-secondary {
-      background: var(--surface);
-      color: var(--text);
-      border: 1px solid var(--border-light);
-    }
-    .btn-secondary:hover { background: var(--surface-hover); border-color: rgba(255,255,255,0.2); }
-
-    .hero-note {
-      font-size: 0.85rem;
-      color: var(--muted);
-      animation: fadeInUp 0.6s ease 0.4s both;
-    }
-
-    /* ===================== TRUST BAR ===================== */
-    .trust-bar {
-      padding: 48px 0;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-    .trust-inner {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 48px;
-      flex-wrap: wrap;
-    }
-    .trust-label {
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      color: var(--muted);
-      font-weight: 600;
-    }
-    .trust-items {
-      display: flex;
-      align-items: center;
-      gap: 40px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .trust-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: var(--muted);
-      font-size: 0.9rem;
-      font-weight: 500;
-    }
-    .trust-item svg { opacity: 0.6; }
-
-    /* ===================== STATS ===================== */
-    .stats { padding: 80px 0; }
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 24px;
-    }
-    .stat-card {
-      text-align: center;
-      padding: 32px 20px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      transition: border-color 0.3s, transform 0.3s;
-    }
-    .stat-card:hover {
-      border-color: var(--primary-glow);
-      transform: translateY(-4px);
-    }
-    .stat-number {
-      font-size: 2.8rem;
-      font-weight: 900;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      line-height: 1.2;
-    }
-    .stat-label {
-      color: var(--muted);
-      font-size: 0.9rem;
-      margin-top: 6px;
-      font-weight: 500;
-    }
-
-    /* ===================== FEATURES OVERVIEW ===================== */
-    .features-overview {
-      padding: 100px 0;
-    }
-    .section-header {
-      text-align: center;
-      margin-bottom: 64px;
-    }
-    .section-label {
-      display: inline-block;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      color: var(--primary);
-      font-weight: 700;
-      margin-bottom: 16px;
-    }
-    .section-header h2 {
-      font-size: clamp(2rem, 4vw, 2.8rem);
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      margin-bottom: 16px;
-    }
-    .section-header p {
-      color: var(--muted);
-      font-size: 1.1rem;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-    }
-
-    .feature-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 36px;
-      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
-      position: relative;
-      overflow: hidden;
-    }
-    .feature-card:hover {
-      transform: translateY(-6px);
-      border-color: rgba(0, 212, 170, 0.2);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    }
-    .feature-card::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    /* Scroll-triggered fade-in animations */
+    .fade-up {
       opacity: 0;
-      transition: opacity 0.3s;
+      transform: translateY(32px);
+      transition: opacity 0.7s ease-out, transform 0.7s ease-out;
     }
-    .feature-card:hover::after { opacity: 1; }
-
-    .feature-icon {
-      width: 56px;
-      height: 56px;
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 20px;
-      font-size: 1.5rem;
-    }
-    .feature-icon.teal { background: var(--primary-dim); }
-    .feature-icon.blue { background: var(--accent-dim); }
-    .feature-icon.amber { background: rgba(245, 158, 11, 0.15); }
-
-    .feature-card h3 {
-      font-size: 1.2rem;
-      font-weight: 700;
-      margin-bottom: 10px;
-    }
-    .feature-card p {
-      color: var(--muted);
-      font-size: 0.95rem;
-      line-height: 1.6;
-    }
-    .feature-tag {
-      display: inline-block;
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-weight: 700;
-      margin-bottom: 16px;
-    }
-    .feature-tag.live {
-      background: rgba(0, 212, 170, 0.1);
-      color: var(--primary);
-    }
-    .feature-tag.ai {
-      background: rgba(139, 92, 246, 0.15);
-      color: #a78bfa;
-    }
-    .feature-tag.coming {
-      background: rgba(245, 158, 11, 0.15);
-      color: #f59e0b;
-    }
-
-    /* ===================== FEATURE DEEP DIVES ===================== */
-    .feature-deep-dive {
-      padding: 80px 0;
-    }
-    .feature-showcase {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      align-items: center;
-      padding: 60px 0;
-    }
-    .feature-showcase.reverse { direction: rtl; }
-    .feature-showcase.reverse > * { direction: ltr; }
-
-    .feature-showcase-content { }
-    .feature-showcase-content .section-label { text-align: left; }
-    .feature-showcase-content h3 {
-      font-size: 2rem;
-      font-weight: 800;
-      margin-bottom: 16px;
-      letter-spacing: -0.5px;
-    }
-    .feature-showcase-content p {
-      color: var(--muted);
-      font-size: 1.05rem;
-      margin-bottom: 24px;
-      line-height: 1.7;
-    }
-    .feature-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .feature-list li {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      font-size: 0.95rem;
-      color: var(--text);
-    }
-    .feature-list li .check {
-      color: var(--primary);
-      font-weight: 700;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-
-    .feature-showcase-visual {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 40px;
-      min-height: 400px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .feature-showcase-visual::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 50% 50%, var(--primary-dim), transparent 70%);
-      opacity: 0.5;
-    }
-
-    .map-preview {
-      position: relative;
-      width: 100%;
-      height: 320px;
-      background: var(--bg-deep);
-      border-radius: 16px;
-      border: 1px solid var(--border-light);
-      overflow: hidden;
-    }
-    .map-grid {
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
-    }
-    .map-dot {
-      position: absolute;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      animation: mapPulse 2s ease-in-out infinite;
-    }
-    .map-dot::after {
-      content: '';
-      position: absolute;
-      inset: -4px;
-      border-radius: 50%;
-      border: 2px solid currentColor;
-      opacity: 0.3;
-      animation: mapRing 2s ease-in-out infinite;
-    }
-    .map-dot.brush { background: var(--primary); color: var(--primary); }
-    .map-dot.stake { background: var(--accent); color: var(--accent); }
-    .map-dot.pvc { background: #f59e0b; color: #f59e0b; }
-
-    .weather-widget {
-      position: relative;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .weather-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 20px;
-      background: var(--bg-deep);
-      border-radius: 12px;
-      border: 1px solid var(--border);
-    }
-    .weather-row .label { color: var(--muted); font-size: 0.85rem; font-weight: 500; }
-    .weather-row .value { font-weight: 700; font-size: 1.1rem; }
-    .weather-row .value.good { color: var(--primary); }
-    .weather-row .value.neutral { color: var(--accent); }
-    .weather-row .value.warn { color: #f59e0b; }
-
-    .depth-diagram {
-      position: relative;
-      width: 100%;
-      height: 280px;
-      background: linear-gradient(180deg, #0c2d48 0%, #0a1628 40%, #060f1d 100%);
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      overflow: hidden;
-    }
-    .depth-layer {
-      position: absolute;
-      left: 0;
-      right: 0;
-      border-top: 2px dashed;
-      padding: 8px 16px;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-    .depth-layer.warm { top: 15%; border-color: #ef4444; color: #ef4444; }
-    .depth-layer.thermo { top: 45%; border-color: #f59e0b; color: #f59e0b; }
-    .depth-layer.cold { top: 75%; border-color: var(--accent); color: var(--accent); }
-    .fish-zone {
-      position: absolute;
-      top: 38%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0, 212, 170, 0.15);
-      border: 1px solid var(--primary);
-      border-radius: 12px;
-      padding: 8px 20px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--primary);
-      animation: pulse 2s infinite;
-    }
-
-    /* ===================== HOW IT WORKS ===================== */
-    .how-it-works {
-      padding: 100px 0;
-      background: linear-gradient(180deg, var(--bg), var(--bg-deep), var(--bg));
-    }
-    .steps-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 40px;
-      margin-top: 20px;
-    }
-    .step {
-      text-align: center;
-      padding: 40px 24px;
-    }
-    .step-number {
-      width: 64px;
-      height: 64px;
-      background: var(--primary-dim);
-      border: 2px solid var(--primary);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      font-weight: 900;
-      color: var(--primary);
-      margin: 0 auto 24px;
-    }
-    .step h3 {
-      font-size: 1.2rem;
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-    .step p {
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-
-    /* ===================== LAKES ===================== */
-    .lakes-section {
-      padding: 100px 0;
-    }
-    .lake-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-      margin-bottom: 40px;
-    }
-    .lake-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 28px;
-      transition: transform 0.3s, border-color 0.3s;
-    }
-    .lake-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(0, 212, 170, 0.2);
-    }
-    .lake-card h4 {
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-    .lake-card .lake-state {
-      color: var(--muted);
-      font-size: 0.85rem;
-      margin-bottom: 16px;
-    }
-    .lake-stats {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-    .lake-stat {
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-    .lake-stat strong {
-      color: var(--primary);
-      font-weight: 700;
-    }
-    .lakes-note {
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-    .lakes-note strong { color: var(--text); }
-
-    /* ===================== TESTIMONIALS ===================== */
-    .testimonials {
-      padding: 100px 0;
-      background: var(--bg-deep);
-    }
-    .testimonial-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-    }
-    .testimonial-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 32px;
-      position: relative;
-    }
-    .testimonial-card::before {
-      content: '\201C';
-      position: absolute;
-      top: 20px;
-      left: 28px;
-      font-size: 3rem;
-      color: var(--primary);
-      opacity: 0.3;
-      font-family: Georgia, serif;
-      line-height: 1;
-    }
-    .testimonial-card blockquote {
-      font-size: 1rem;
-      line-height: 1.7;
-      margin-bottom: 20px;
-      padding-top: 16px;
-    }
-    .testimonial-author {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .testimonial-avatar {
-      width: 40px;
-      height: 40px;
-      background: var(--primary-dim);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      color: var(--primary);
-      font-size: 0.85rem;
-    }
-    .testimonial-name {
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
-    .testimonial-location {
-      color: var(--muted);
-      font-size: 0.8rem;
-    }
-
-    /* ===================== KNOWLEDGE BASE PREVIEW ===================== */
-    .knowledge-section {
-      padding: 100px 0;
-    }
-    .knowledge-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 24px;
-    }
-    .knowledge-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 32px;
-      display: flex;
-      gap: 20px;
-      transition: transform 0.3s, border-color 0.3s;
-    }
-    .knowledge-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(0, 212, 170, 0.2);
-    }
-    .knowledge-icon {
-      width: 48px;
-      height: 48px;
-      background: var(--primary-dim);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.3rem;
-      flex-shrink: 0;
-    }
-    .knowledge-card h4 {
-      font-size: 1.05rem;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-    .knowledge-card p {
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    /* ===================== PRICING ===================== */
-    .pricing {
-      padding: 100px 0;
-      background: linear-gradient(180deg, var(--bg), var(--bg-deep));
-    }
-    .pricing-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      max-width: 960px;
-      margin: 0 auto;
-    }
-    .pricing-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 36px;
-      text-align: center;
-      transition: transform 0.3s, border-color 0.3s;
-      position: relative;
-    }
-    .pricing-card:hover {
-      transform: translateY(-4px);
-    }
-    .pricing-card.featured {
-      border-color: var(--primary);
-      box-shadow: 0 0 40px rgba(0, 212, 170, 0.1);
-    }
-    .pricing-card.featured::before {
-      content: 'Most Popular';
-      position: absolute;
-      top: -14px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: linear-gradient(135deg, var(--primary), #00e8bb);
-      color: var(--bg);
-      font-size: 0.75rem;
-      font-weight: 800;
-      padding: 6px 20px;
-      border-radius: 100px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .pricing-card h3 {
-      font-size: 1.2rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-    .pricing-amount {
-      font-size: 2.5rem;
-      font-weight: 900;
-      margin-bottom: 4px;
-    }
-    .pricing-amount .currency { font-size: 1.2rem; vertical-align: top; margin-right: 2px; }
-    .pricing-amount .period { font-size: 0.9rem; color: var(--muted); font-weight: 500; }
-    .pricing-description {
-      color: var(--muted);
-      font-size: 0.85rem;
-      margin-bottom: 28px;
-      min-height: 40px;
-    }
-    .pricing-features {
-      list-style: none;
-      text-align: left;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-bottom: 28px;
-    }
-    .pricing-features li {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      font-size: 0.9rem;
-    }
-    .pricing-features li .icon {
-      color: var(--primary);
-      flex-shrink: 0;
-      font-weight: 700;
-    }
-    .pricing-features li.disabled {
-      color: var(--muted);
-    }
-    .pricing-features li.disabled .icon {
-      color: var(--muted);
-      opacity: 0.4;
-    }
-    .pricing-btn {
-      display: block;
-      width: 100%;
-      padding: 14px;
-      border-radius: 12px;
-      font-size: 0.95rem;
-      font-weight: 700;
-      text-decoration: none;
-      text-align: center;
-      cursor: pointer;
-      border: none;
-      transition: transform 0.2s, opacity 0.2s;
-    }
-    .pricing-btn:hover { transform: translateY(-2px); }
-    .pricing-btn.primary {
-      background: linear-gradient(135deg, var(--primary), #00e8bb);
-      color: var(--bg);
-    }
-    .pricing-btn.secondary {
-      background: rgba(255,255,255,0.05);
-      color: var(--text);
-      border: 1px solid var(--border-light);
-    }
-
-    /* ===================== FAQ ===================== */
-    .faq {
-      padding: 100px 0;
-    }
-    .faq-grid {
-      max-width: 800px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .faq-item {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      overflow: hidden;
-    }
-    .faq-question {
-      width: 100%;
-      padding: 20px 24px;
-      background: none;
-      border: none;
-      color: var(--text);
-      font-size: 1rem;
-      font-weight: 600;
-      font-family: inherit;
-      text-align: left;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: color 0.2s;
-    }
-    .faq-question:hover { color: var(--primary); }
-    .faq-question .arrow {
-      transition: transform 0.3s;
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-    .faq-item.open .faq-question .arrow { transform: rotate(180deg); }
-    .faq-answer {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease;
-    }
-    .faq-answer-inner {
-      padding: 0 24px 20px;
-      color: var(--muted);
-      font-size: 0.95rem;
-      line-height: 1.7;
-    }
-    .faq-item.open .faq-answer {
-      max-height: 300px;
-    }
-
-    /* ===================== FINAL CTA ===================== */
-    .final-cta {
-      padding: 120px 0;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .final-cta::before {
-      content: '';
-      position: absolute;
-      bottom: -200px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 800px;
-      height: 800px;
-      background: radial-gradient(circle, var(--primary-dim) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .final-cta .container { position: relative; z-index: 1; }
-    .final-cta h2 {
-      font-size: clamp(2rem, 4vw, 2.8rem);
-      font-weight: 800;
-      margin-bottom: 16px;
-      letter-spacing: -0.5px;
-    }
-    .final-cta p {
-      color: var(--muted);
-      font-size: 1.1rem;
-      margin-bottom: 40px;
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .cta-form {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      flex-wrap: wrap;
-      max-width: 500px;
-      margin: 0 auto 16px;
-    }
-    .cta-form input {
-      flex: 1;
-      min-width: 250px;
-      padding: 16px 20px;
-      border: 1px solid var(--border-light);
-      border-radius: 12px;
-      background: var(--surface);
-      color: var(--text);
-      font-size: 1rem;
-      font-family: inherit;
-      transition: border-color 0.2s;
-    }
-    .cta-form input:focus {
-      outline: none;
-      border-color: var(--primary);
-    }
-    .cta-form input::placeholder { color: var(--muted); }
-    .cta-form button {
-      padding: 16px 32px;
-      background: linear-gradient(135deg, var(--primary), #00e8bb);
-      color: var(--bg);
-      border: none;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      font-family: inherit;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .cta-form button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 20px rgba(0, 212, 170, 0.3);
-    }
-    .cta-note {
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-
-    /* ===================== FOOTER ===================== */
-    footer {
-      padding: 60px 0 40px;
-      border-top: 1px solid var(--border);
-    }
-    .footer-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr;
-      gap: 40px;
-      margin-bottom: 40px;
-    }
-    .footer-brand .logo {
-      display: inline-block;
-      margin-bottom: 16px;
-    }
-    .footer-brand p {
-      color: var(--muted);
-      font-size: 0.9rem;
-      max-width: 280px;
-      line-height: 1.7;
-    }
-    .footer-col h4 {
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: var(--muted);
-      margin-bottom: 16px;
-      font-weight: 600;
-    }
-    .footer-col a {
-      display: block;
-      color: var(--text);
-      text-decoration: none;
-      font-size: 0.9rem;
-      padding: 4px 0;
-      transition: color 0.2s;
-    }
-    .footer-col a:hover { color: var(--primary); }
-    .footer-bottom {
-      padding-top: 24px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-    .footer-bottom p {
-      color: var(--muted);
-      font-size: 0.8rem;
-    }
-    .footer-links {
-      display: flex;
-      gap: 24px;
-    }
-    .footer-links a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 0.8rem;
-      transition: color 0.2s;
-    }
-    .footer-links a:hover { color: var(--text); }
-
-    /* ===================== LOGIN MODAL ===================== */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 2000;
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      align-items: center;
-      justify-content: center;
-    }
-    .modal-overlay.open { display: flex; }
-    .modal {
-      background: var(--surface);
-      border: 1px solid var(--border-light);
-      border-radius: 24px;
-      padding: 48px 40px;
-      width: 100%;
-      max-width: 440px;
-      position: relative;
-      animation: fadeInUp 0.3s ease;
-    }
-    .modal-close {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      background: none;
-      border: none;
-      color: var(--muted);
-      font-size: 1.5rem;
-      cursor: pointer;
-      padding: 8px;
-      border-radius: 8px;
-      line-height: 1;
-      transition: color 0.2s, background 0.2s;
-    }
-    .modal-close:hover { color: var(--text); background: rgba(255,255,255,0.05); }
-    .modal-logo {
-      text-align: center;
-      margin-bottom: 8px;
-    }
-    .modal-logo img {
-      width: 56px;
-      height: 56px;
-      border-radius: 14px;
-    }
-    .modal h2 {
-      text-align: center;
-      font-size: 1.5rem;
-      font-weight: 800;
-      margin-bottom: 8px;
-    }
-    .modal .modal-subtitle {
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.9rem;
-      margin-bottom: 32px;
-    }
-    .form-group {
-      margin-bottom: 16px;
-    }
-    .form-group label {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
-    .form-group input {
-      width: 100%;
-      padding: 14px 16px;
-      border: 1px solid var(--border-light);
-      border-radius: 10px;
-      background: var(--bg);
-      color: var(--text);
-      font-size: 0.95rem;
-      font-family: inherit;
-      transition: border-color 0.2s;
-    }
-    .form-group input:focus {
-      outline: none;
-      border-color: var(--primary);
-    }
-    .form-group input::placeholder { color: var(--muted); }
-    .login-btn {
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, var(--primary), #00e8bb);
-      color: var(--bg);
-      border: none;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-weight: 700;
-      font-family: inherit;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-      margin-top: 8px;
-    }
-    .login-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 20px rgba(0, 212, 170, 0.3);
-    }
-    .login-btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
-    .login-divider {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin: 24px 0;
-      color: var(--muted);
-      font-size: 0.8rem;
-    }
-    .login-divider::before,
-    .login-divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
-    .oauth-buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .oauth-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      font-family: inherit;
-      cursor: pointer;
-      transition: transform 0.2s, background 0.2s;
-      border: 1px solid var(--border-light);
-      background: var(--bg);
-      color: var(--text);
-    }
-    .oauth-btn:hover { background: var(--surface-hover); transform: translateY(-1px); }
-    .oauth-btn svg { flex-shrink: 0; }
-    .login-footer {
-      text-align: center;
-      margin-top: 24px;
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-    .login-footer a {
-      color: var(--primary);
-      text-decoration: none;
-      font-weight: 600;
-    }
-    .login-footer a:hover { text-decoration: underline; }
-    .login-error {
-      display: none;
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      color: #f87171;
-      padding: 12px 16px;
-      border-radius: 10px;
-      font-size: 0.85rem;
-      margin-bottom: 16px;
-    }
-    .login-error.show { display: block; }
-
-    /* ===================== WEB DASHBOARD SECTION ===================== */
-    .web-dashboard {
-      padding: 100px 0;
-      background: linear-gradient(180deg, var(--bg-deep), var(--bg));
-    }
-    .dashboard-preview {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      overflow: hidden;
-      margin-top: 48px;
-    }
-    .dashboard-chrome {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 14px 20px;
-      background: var(--bg-deep);
-      border-bottom: 1px solid var(--border);
-    }
-    .chrome-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-    }
-    .chrome-dot.red { background: #ef4444; }
-    .chrome-dot.yellow { background: #f59e0b; }
-    .chrome-dot.green { background: #22c55e; }
-    .chrome-url {
-      flex: 1;
-      margin-left: 12px;
-      padding: 8px 16px;
-      background: rgba(255,255,255,0.05);
-      border-radius: 8px;
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-    .dashboard-body {
-      display: grid;
-      grid-template-columns: 240px 1fr;
-      min-height: 400px;
-    }
-    .dashboard-sidebar {
-      padding: 24px 20px;
-      border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .sidebar-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 14px;
-      border-radius: 10px;
-      font-size: 0.85rem;
-      color: var(--muted);
-      font-weight: 500;
-      transition: background 0.2s, color 0.2s;
-    }
-    .sidebar-item.active {
-      background: var(--primary-dim);
-      color: var(--primary);
-      font-weight: 600;
-    }
-    .dashboard-main {
-      padding: 24px;
-    }
-    .dashboard-main h3 {
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 20px;
-    }
-    .dashboard-cards {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
-    .dash-card {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
-    }
-    .dash-card .dash-label {
-      font-size: 0.75rem;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-weight: 600;
-    }
-    .dash-card .dash-value {
-      font-size: 1.5rem;
-      font-weight: 800;
-      margin-top: 4px;
-    }
-    .dash-card .dash-value.good { color: var(--primary); }
-    .dash-card .dash-value.warn { color: #f59e0b; }
-    .dash-card .dash-value.neutral { color: var(--accent); }
-    @media (max-width: 768px) {
-      .dashboard-body { grid-template-columns: 1fr; }
-      .dashboard-sidebar { display: none; }
-      .dashboard-cards { grid-template-columns: 1fr; }
-    }
-
-    /* ===================== FORM STATES ===================== */
-    .form-success {
-      display: none;
-      text-align: center;
-      padding: 20px;
-      animation: fadeInUp 0.4s ease;
-    }
-    .form-success.show { display: block; }
-    .form-success .checkmark {
-      width: 56px;
-      height: 56px;
-      background: var(--primary-dim);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 16px;
-      font-size: 1.5rem;
-      color: var(--primary);
-    }
-    .form-success h3 {
-      font-size: 1.2rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-    .form-success p {
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-    .form-error-msg {
-      display: none;
-      color: #f87171;
-      font-size: 0.85rem;
-      margin-top: 8px;
-      text-align: center;
-    }
-    .form-error-msg.show { display: block; }
-
-    /* ===================== SKIP LINK ===================== */
-    .skip-link {
-      position: absolute;
-      top: -40px;
-      left: 0;
-      background: var(--primary);
-      color: var(--bg);
-      padding: 8px 16px;
-      z-index: 10000;
-      font-weight: 700;
-      font-size: 0.9rem;
-      border-radius: 0 0 8px 0;
-      transition: top 0.2s;
-    }
-    .skip-link:focus { top: 0; }
-
-    /* ===================== FOCUS STYLES ===================== */
-    *:focus-visible {
-      outline: 2px solid var(--primary);
-      outline-offset: 2px;
-    }
-    button:focus-visible, a:focus-visible, input:focus-visible {
-      outline: 2px solid var(--primary);
-      outline-offset: 2px;
-    }
-
-    /* ===================== ANIMATIONS ===================== */
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes fadeInDown {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-    @keyframes mapPulse {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.2); opacity: 0.7; }
-    }
-    @keyframes mapRing {
-      0% { transform: scale(1); opacity: 0.3; }
-      100% { transform: scale(2); opacity: 0; }
-    }
-
-    .fade-in {
-      opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-    .fade-in.visible {
+    .fade-up.visible {
       opacity: 1;
       transform: translateY(0);
     }
 
-    /* ===================== RESPONSIVE ===================== */
-    @media (max-width: 1024px) {
-      .feature-grid { grid-template-columns: repeat(2, 1fr); }
-      .feature-showcase { grid-template-columns: 1fr; gap: 40px; }
-      .feature-showcase.reverse { direction: ltr; }
-      .footer-grid { grid-template-columns: 1fr 1fr; }
+    /* Staggered children */
+    .stagger > .fade-up:nth-child(1) { transition-delay: 0ms; }
+    .stagger > .fade-up:nth-child(2) { transition-delay: 100ms; }
+    .stagger > .fade-up:nth-child(3) { transition-delay: 200ms; }
+    .stagger > .fade-up:nth-child(4) { transition-delay: 300ms; }
+    .stagger > .fade-up:nth-child(5) { transition-delay: 400ms; }
+    .stagger > .fade-up:nth-child(6) { transition-delay: 500ms; }
+
+    /* Subtle hover lift for cards */
+    .card-hover {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(28, 25, 23, 0.1);
     }
 
-    @media (max-width: 768px) {
-      .hero { padding: 130px 0 60px; }
-      .hero h1 { font-size: 2.4rem; }
-      .stats-grid { grid-template-columns: repeat(2, 1fr); }
-      .feature-grid { grid-template-columns: 1fr; }
-      .steps-grid { grid-template-columns: 1fr; gap: 24px; }
-      .lake-grid { grid-template-columns: 1fr; }
-      .testimonial-grid { grid-template-columns: 1fr; }
-      .knowledge-grid { grid-template-columns: 1fr; }
-      .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
-      .footer-grid { grid-template-columns: 1fr; }
-
-      nav { display: none; }
-      nav.open {
-        display: flex;
-        flex-direction: column;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background: rgba(10, 22, 40, 0.98);
-        backdrop-filter: blur(20px);
-        padding: 16px 24px;
-        border-bottom: 1px solid var(--border);
-      }
-      .mobile-toggle { display: block; }
+    /* Photo placeholder styling */
+    .photo-placeholder {
+      background: linear-gradient(135deg, #E7DDD3 0%, #D4C8BA 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #94A3B8;
+      font-size: 0.8rem;
+      text-align: center;
+      padding: 1rem;
     }
+
+    /* Login modal */
+    .modal-overlay {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #F5F0EB; }
+    ::-webkit-scrollbar-thumb { background: #C2703E; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #A85C2E; }
   </style>
 </head>
-<body>
-  <!-- Skip Link -->
-  <a href="#main-content" class="skip-link">Skip to main content</a>
 
-  <!-- ============ HEADER ============ -->
-  <header id="header" role="banner">
-    <div class="container header-inner">
-      <a href="/" class="logo" aria-label="SlabHaul home">
-        <img src="/assets/images/slabhaul_icon.png" alt="" width="32" height="32" style="vertical-align:middle;margin-right:8px;border-radius:6px;">Slab<span>Haul</span>
+<body class="bg-stone-100 text-stone-900 antialiased" x-data="{ loginOpen: false, mobileMenuOpen: false }">
+
+  <!-- ============================== NAV ============================== -->
+  <nav class="fixed top-0 w-full z-50 bg-stone-100/90 backdrop-blur-md border-b border-stone-900/5">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-2">
+        <span class="font-serif font-bold text-xl tracking-tight text-stone-900">SlabHaul</span>
       </a>
-      <nav id="nav" role="navigation" aria-label="Main navigation">
-        <a href="#features">Features</a>
-        <a href="#web-app">Web App</a>
-        <a href="#lakes">Lakes</a>
-        <a href="#pricing">Pricing</a>
-        <a href="#faq">FAQ</a>
-        <a href="#" class="nav-login" id="nav-login-btn" onclick="openLogin(event)">Log In</a>
-        <a href="#signup" class="nav-cta">Get Early Access</a>
-      </nav>
-      <button class="mobile-toggle" onclick="document.getElementById('nav').classList.toggle('open')" aria-label="Toggle menu">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
-        </svg>
+
+      <!-- Desktop Links -->
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#features" class="text-sm text-stone-900/70 hover:text-copper transition-colors">Features</a>
+        <a href="#how-it-works" class="text-sm text-stone-900/70 hover:text-copper transition-colors">How It Works</a>
+        <a href="#pricing" class="text-sm text-stone-900/70 hover:text-copper transition-colors">Pricing</a>
+        <button id="nav-login-btn" @click="loginOpen = true" class="text-sm font-medium text-copper hover:text-copper-dark transition-colors">Log In</button>
+        <a href="https://apps.apple.com/app/slabhaul-crappie-companion/id6759182169" class="inline-flex items-center gap-2 bg-stone-900 text-stone-50 text-sm font-medium px-4 py-2 rounded-lg hover:bg-stone-800 transition-colors">
+          Download App
+        </a>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-2 text-stone-900">
+        <svg x-show="!mobileMenuOpen" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        <svg x-show="mobileMenuOpen" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
     </div>
-  </header>
 
-  <!-- ============ HERO ============ -->
-  <main id="main-content">
-  <section class="hero">
-    <div class="container hero-content">
-      <div class="hero-badge">
-        <span class="pulse"></span>
-        Coming Soon to iOS
-      </div>
-      <h1>The <span class="highlight">Crappie Fishing</span><br>Intelligence App</h1>
-      <p class="hero-subtitle">Real-time lake conditions, thermocline predictions, attractor maps, and AI-powered insights. Everything you need to haul more slabs.</p>
-      <p class="hero-differentiator">The only fishing app built 100% for crappie. Not bass. Not walleye. Crappie.</p>
-      <div class="hero-actions">
-        <a href="#signup" class="btn btn-primary">Get Early Access</a>
-        <a href="#features" class="btn btn-secondary">See Features</a>
-        <a href="#" class="btn btn-secondary" onclick="openLogin(event)">Log In</a>
-      </div>
-      <p class="hero-note">Free during beta &middot; No credit card required</p>
+    <!-- Mobile Menu -->
+    <div x-show="mobileMenuOpen" x-transition class="md:hidden bg-stone-100 border-t border-stone-900/5 px-6 py-4 space-y-3">
+      <a href="#features" @click="mobileMenuOpen = false" class="block text-sm text-stone-900/70">Features</a>
+      <a href="#how-it-works" @click="mobileMenuOpen = false" class="block text-sm text-stone-900/70">How It Works</a>
+      <a href="#pricing" @click="mobileMenuOpen = false" class="block text-sm text-stone-900/70">Pricing</a>
+      <button @click="loginOpen = true; mobileMenuOpen = false" class="block text-sm font-medium text-copper">Log In</button>
+      <a href="https://apps.apple.com/app/slabhaul-crappie-companion/id6759182169" class="inline-flex items-center gap-2 bg-stone-900 text-stone-50 text-sm font-medium px-4 py-2 rounded-lg">Download App</a>
     </div>
-  </section>
+  </nav>
 
-  <!-- ============ TRUST BAR ============ -->
-  <section class="trust-bar">
-    <div class="container">
-      <div class="trust-inner">
-        <span class="trust-label">Powered by</span>
-        <div class="trust-items">
-          <div class="trust-item">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-            USGS Water Data
-          </div>
-          <div class="trust-item">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>
-            Open-Meteo Weather
-          </div>
-          <div class="trust-item">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7 1.49 0 2.7 1.21 2.7 2.7V22H17c1.1 0 2-.9 2-2v-4h1.5c1.38 0 2.5-1.12 2.5-2.5S21.88 11 20.5 11z"/></svg>
-            State Wildlife Agencies
-          </div>
-        </div>
-      </div>
+
+  <!-- ============================== HERO ============================== -->
+  <section class="relative min-h-screen flex items-center pt-16 overflow-hidden">
+    <!-- Background photo placeholder -->
+    <div class="absolute inset-0 photo-placeholder opacity-30" role="img" aria-label="Misty dawn on a Tennessee lake with crappie boat silhouetted against golden sunrise">
     </div>
-  </section>
+    <div class="absolute inset-0 bg-gradient-to-b from-stone-100/80 via-stone-100/60 to-stone-100"></div>
 
-  <!-- ============ STATS ============ -->
-  <section class="stats">
-    <div class="container">
-      <div class="stats-grid">
-        <div class="stat-card fade-in">
-          <div class="stat-number">85+</div>
-          <div class="stat-label">Lakes Covered</div>
-        </div>
-        <div class="stat-card fade-in">
-          <div class="stat-number">69</div>
-          <div class="stat-label">USGS Stream Gauges</div>
-        </div>
-        <div class="stat-card fade-in">
-          <div class="stat-number">24/7</div>
-          <div class="stat-label">Real-Time Data</div>
-        </div>
-        <div class="stat-card fade-in">
-          <div class="stat-number">100%</div>
-          <div class="stat-label">Crappie Focused</div>
-        </div>
-      </div>
-    </div>
-  </section>
+    <div class="relative max-w-6xl mx-auto px-6 py-24 md:py-32">
+      <div class="max-w-3xl">
+        <p class="fade-up text-copper font-medium text-sm tracking-widest uppercase mb-6">Built for Crappie Fishermen</p>
+        <h1 class="fade-up font-serif text-5xl md:text-6xl lg:text-7xl font-bold text-stone-900 leading-[1.1] mb-6">
+          The Only Fishing App Built for Crappie.
+        </h1>
+        <p class="fade-up text-lg md:text-xl text-slate max-w-xl mb-10 leading-relaxed">
+          Real-time lake intelligence, brush pile maps, and solunar forecasts — everything you need to find slabs, nothing you don't.
+        </p>
 
-  <!-- ============ FEATURES OVERVIEW ============ -->
-  <section class="features-overview" id="features">
-    <div class="container">
-      <div class="section-header fade-in">
-        <div class="section-label">Features</div>
-        <h2>Everything a Crappie Fisherman Needs</h2>
-        <p>Purpose-built tools that help you find, pattern, and catch more slabs on every trip.</p>
-      </div>
-      <div class="feature-grid">
-        <div class="feature-card fade-in">
-          <span class="feature-tag live">Live Data</span>
-          <div class="feature-icon teal">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          </div>
-          <h3>Attractor Map</h3>
-          <p>GPS coordinates for brush piles, stake beds, PVC trees, and pallets. The spots the locals don't share — color-coded and filterable by type.</p>
-        </div>
-        <div class="feature-card fade-in">
-          <span class="feature-tag live">Live Data</span>
-          <div class="feature-icon blue">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>
-          </div>
-          <h3>Weather Dashboard</h3>
-          <p>Barometric pressure trends, wind visualization, moon phases, and hourly forecasts — all tuned for crappie behavior patterns.</p>
-        </div>
-        <div class="feature-card fade-in">
-          <span class="feature-tag live">Live Data</span>
-          <div class="feature-icon teal">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
-          </div>
-          <h3>Lake Conditions</h3>
-          <p>Real-time water levels vs. normal pool elevation, USGS stream gauge data, and generation schedules from TVA and Army Corps dams.</p>
-        </div>
-        <div class="feature-card fade-in">
-          <span class="feature-tag ai">AI-Powered</span>
-          <div class="feature-icon blue">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-          </div>
-          <h3>Thermocline Predictor</h3>
-          <p>Water temperature stratification analysis that tells you exactly what depth crappie are holding at. No more guessing.</p>
-        </div>
-        <div class="feature-card fade-in">
-          <span class="feature-tag ai">AI-Powered</span>
-          <div class="feature-icon teal">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-          </div>
-          <h3>Bait Recommendations</h3>
-          <p>AI-powered lure and color suggestions based on current conditions, seasonal patterns, water clarity, and what's producing right now.</p>
-        </div>
-        <div class="feature-card fade-in">
-          <span class="feature-tag live">Built-In Tool</span>
-          <div class="feature-icon amber">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 6v6l4 2"/></svg>
-          </div>
-          <h3>Spider Rig Calculator</h3>
-          <p>Physics-based depth calculator for spider rigging. Input sinker weight, line length, boat speed, and line type to hit the exact depth zone.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ FEATURE DEEP DIVE: ATTRACTOR MAP ============ -->
-  <section class="feature-deep-dive">
-    <div class="container">
-      <div class="feature-showcase fade-in">
-        <div class="feature-showcase-content">
-          <div class="section-label">Attractor Map</div>
-          <h3>The Spots the Locals Don't Share</h3>
-          <p>Access GPS coordinates for fish attractors across multiple lakes — data sourced directly from state wildlife agencies. Filter by type, get turn-by-turn navigation, and fish the structure that holds slabs.</p>
-          <ul class="feature-list">
-            <li><span class="check">&#10003;</span> Brush piles, stake beds, PVC trees, and pallet structures</li>
-            <li><span class="check">&#10003;</span> Color-coded markers with depth and GPS coordinates</li>
-            <li><span class="check">&#10003;</span> Filter by lake and attractor type</li>
-            <li><span class="check">&#10003;</span> One-tap navigation to any location</li>
-            <li><span class="check">&#10003;</span> Works offline — data stored on device</li>
-          </ul>
-        </div>
-        <div class="feature-showcase-visual">
-          <div class="map-preview">
-            <div class="map-grid"></div>
-            <div class="map-dot brush" style="top:20%;left:30%;animation-delay:0s"></div>
-            <div class="map-dot brush" style="top:55%;left:25%;animation-delay:0.3s"></div>
-            <div class="map-dot stake" style="top:35%;left:60%;animation-delay:0.6s"></div>
-            <div class="map-dot stake" style="top:70%;left:45%;animation-delay:0.9s"></div>
-            <div class="map-dot pvc" style="top:25%;left:75%;animation-delay:1.2s"></div>
-            <div class="map-dot brush" style="top:65%;left:70%;animation-delay:0.4s"></div>
-            <div class="map-dot pvc" style="top:45%;left:42%;animation-delay:0.7s"></div>
-            <div class="map-dot stake" style="top:80%;left:20%;animation-delay:1.0s"></div>
-            <div style="position:absolute;bottom:16px;left:16px;display:flex;gap:12px;font-size:0.7rem;color:var(--muted);">
-              <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--primary);margin-right:4px;vertical-align:middle;"></span>Brush Pile</span>
-              <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:4px;vertical-align:middle;"></span>Stake Bed</span>
-              <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#f59e0b;margin-right:4px;vertical-align:middle;"></span>PVC Tree</span>
-            </div>
-          </div>
+        <!-- CTA Buttons -->
+        <div class="fade-up flex flex-wrap gap-4 mb-12">
+          <a href="https://apps.apple.com/app/slabhaul-crappie-companion/id6759182169" class="inline-flex items-center gap-3 bg-stone-900 text-stone-50 font-medium px-6 py-3.5 rounded-xl hover:bg-stone-800 transition-colors">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+            App Store
+          </a>
+          <a href="https://play.google.com/store/apps/details?id=com.slabhaulapp.slabhaul" class="inline-flex items-center gap-3 bg-stone-900 text-stone-50 font-medium px-6 py-3.5 rounded-xl hover:bg-stone-800 transition-colors">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.49c-.35-.55-.18-1.44-.18-1.44L13.83 12 3 1.95S2.83 1.06 3.18.51c.35-.55 1.01-.5 1.01-.5l13.39 7.72L13.83 12l3.75 4.27L4.19 23.99s-.66.05-1.01-.5zM20.16 10.51L17 8.7l-3.17 3.3 3.17 3.3 3.16-1.81c1.12-.65 1.12-1.69 0-2.98z"/></svg>
+            Google Play
+          </a>
+          <a href="https://slabhaulapp.com" class="inline-flex items-center gap-2 border-2 border-stone-900/20 text-stone-900 font-medium px-6 py-3.5 rounded-xl hover:border-copper hover:text-copper transition-colors">
+            Try Web App
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
         </div>
       </div>
 
-      <!-- FEATURE DEEP DIVE: WEATHER -->
-      <div class="feature-showcase reverse fade-in">
-        <div class="feature-showcase-content">
-          <div class="section-label">Weather Intelligence</div>
-          <h3>Weather That Speaks Crappie</h3>
-          <p>Not just a weather app — it's a fishing conditions dashboard. Barometric pressure trends tell you when the bite is on. Moon phase and solunar data help you plan the perfect window. All tuned for crappie behavior.</p>
-          <ul class="feature-list">
-            <li><span class="check">&#10003;</span> Barometric pressure trends with historical charts</li>
-            <li><span class="check">&#10003;</span> Moon phase and solunar activity ratings</li>
-            <li><span class="check">&#10003;</span> Wind speed and direction visualization</li>
-            <li><span class="check">&#10003;</span> 7-day forecast with hourly breakdowns</li>
-            <li><span class="check">&#10003;</span> Water level vs. normal pool elevation</li>
-          </ul>
-        </div>
-        <div class="feature-showcase-visual">
-          <div class="weather-widget">
-            <div class="weather-row">
-              <span class="label">Barometric Pressure</span>
-              <span class="value good">30.12 in &darr; Falling</span>
-            </div>
-            <div class="weather-row">
-              <span class="label">Moon Phase</span>
-              <span class="value neutral">Waxing Gibbous (72%)</span>
-            </div>
-            <div class="weather-row">
-              <span class="label">Solunar Rating</span>
-              <span class="value good">Excellent</span>
-            </div>
-            <div class="weather-row">
-              <span class="label">Wind</span>
-              <span class="value">SSW 8 mph</span>
-            </div>
-            <div class="weather-row">
-              <span class="label">Water Level</span>
-              <span class="value warn">+1.2 ft above normal</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- FEATURE DEEP DIVE: THERMOCLINE -->
-      <div class="feature-showcase fade-in">
-        <div class="feature-showcase-content">
-          <div class="section-label">Thermocline Predictor</div>
-          <h3>Know Exactly Where They're Holding</h3>
-          <p>Our thermocline prediction model analyzes water temperature stratification to identify the exact depth zone where crappie are most likely concentrated. Stop wasting time fishing the wrong depth.</p>
-          <ul class="feature-list">
-            <li><span class="check">&#10003;</span> Visual thermocline depth indicator</li>
-            <li><span class="check">&#10003;</span> Temperature stratification analysis</li>
-            <li><span class="check">&#10003;</span> Optimal crappie holding zone highlighted</li>
-            <li><span class="check">&#10003;</span> Seasonal pattern integration</li>
-            <li><span class="check">&#10003;</span> Pairs with spider rig calculator for exact depth targeting</li>
-          </ul>
-        </div>
-        <div class="feature-showcase-visual">
-          <div class="depth-diagram">
-            <div class="depth-layer warm">Epilimnion &middot; 78&deg;F</div>
-            <div class="fish-zone">Crappie Zone &middot; 12-18 ft</div>
-            <div class="depth-layer thermo">Thermocline &middot; 68&deg;F</div>
-            <div class="depth-layer cold">Hypolimnion &middot; 52&deg;F</div>
+      <!-- Hero Device Mockup -->
+      <div class="fade-up absolute right-0 top-1/2 -translate-y-1/2 hidden lg:block">
+        <div class="w-72 h-[580px] bg-stone-900 rounded-[2.5rem] p-3 shadow-2xl rotate-2">
+          <div class="w-full h-full rounded-[2rem] photo-placeholder bg-stone-800 text-stone-50/40 text-xs">
+            App screenshot: Lake dashboard showing water temp 68F, thermocline at 14ft, bite forecast 87%
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ============ HOW IT WORKS ============ -->
-  <section class="how-it-works">
-    <div class="container">
-      <div class="section-header fade-in">
-        <div class="section-label">How It Works</div>
-        <h2>From Download to Slabs in Minutes</h2>
-      </div>
-      <div class="steps-grid">
-        <div class="step fade-in">
-          <div class="step-number">1</div>
-          <h3>Pick Your Lake</h3>
-          <p>Select from 85+ supported lakes with pre-loaded attractor data, water level gauges, and local conditions.</p>
+
+  <!-- ============================== SOCIAL PROOF BAR ============================== -->
+  <section class="bg-stone-900 py-6">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-12">
+      <p class="text-stone-50/70 text-sm font-medium tracking-wide">Available on</p>
+      <div class="flex items-center gap-8">
+        <div class="flex items-center gap-2 text-stone-50">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          <span class="text-sm font-medium">iOS</span>
         </div>
-        <div class="step fade-in">
-          <div class="step-number">2</div>
-          <h3>Check Conditions</h3>
-          <p>Review real-time weather, barometric trends, water levels, and thermocline predictions all in one dashboard.</p>
+        <div class="flex items-center gap-2 text-stone-50">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.49c-.35-.55-.18-1.44-.18-1.44L13.83 12 3 1.95S2.83 1.06 3.18.51c.35-.55 1.01-.5 1.01-.5l13.39 7.72L13.83 12l3.75 4.27L4.19 23.99s-.66.05-1.01-.5zM20.16 10.51L17 8.7l-3.17 3.3 3.17 3.3 3.16-1.81c1.12-.65 1.12-1.69 0-2.98z"/></svg>
+          <span class="text-sm font-medium">Android</span>
         </div>
-        <div class="step fade-in">
-          <div class="step-number">3</div>
-          <h3>Find the Slabs</h3>
-          <p>Navigate to fish attractors, dial in your depth with the spider rig calculator, and start hauling slabs.</p>
+        <div class="flex items-center gap-2 text-stone-50">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+          <span class="text-sm font-medium">Web</span>
         </div>
       </div>
+      <a href="https://testflight.apple.com/join/K1uUz5dj" class="text-copper-light text-sm font-medium hover:text-copper transition-colors">
+        Join TestFlight Beta &rarr;
+      </a>
     </div>
   </section>
 
-  <!-- ============ LAKES ============ -->
-  <section class="lakes-section" id="lakes">
-    <div class="container">
-      <div class="section-header fade-in">
-        <div class="section-label">Lakes</div>
-        <h2>Growing Lake Coverage</h2>
-        <p>Full attractor maps, water data, and local conditions. New lakes added regularly.</p>
-      </div>
-      <div class="lake-grid">
-        <div class="lake-card fade-in">
-          <h4>Kentucky Lake</h4>
-          <p class="lake-state">Tennessee / Kentucky</p>
-          <div class="lake-stats">
-            <span class="lake-stat"><strong>160,309</strong> acres</span>
-            <span class="lake-stat"><strong>10+</strong> attractors</span>
-            <span class="lake-stat"><strong>USGS</strong> gauged</span>
-          </div>
-        </div>
-        <div class="lake-card fade-in">
-          <h4>Reelfoot Lake</h4>
-          <p class="lake-state">Tennessee</p>
-          <div class="lake-stats">
-            <span class="lake-stat"><strong>15,500</strong> acres</span>
-            <span class="lake-stat"><strong>10+</strong> attractors</span>
-            <span class="lake-stat"><strong>TWRA</strong> data</span>
-          </div>
-        </div>
-        <div class="lake-card fade-in">
-          <h4>Horseshoe Lake</h4>
-          <p class="lake-state">Arkansas</p>
-          <div class="lake-stats">
-            <span class="lake-stat"><strong>2,476</strong> acres</span>
-            <span class="lake-stat"><strong>10+</strong> attractors</span>
-            <span class="lake-stat"><strong>AGFC</strong> data</span>
-          </div>
-        </div>
-      </div>
-      <p class="lakes-note fade-in"><strong>85+ lakes</strong> supported with weather and water data. Full attractor maps rolling out across the Southeast.</p>
-    </div>
-  </section>
 
-  <!-- ============ KNOWLEDGE BASE ============ -->
-  <section class="knowledge-section">
-    <div class="container">
-      <div class="section-header fade-in">
-        <div class="section-label">Knowledge Base</div>
-        <h2>Built-In Crappie Intelligence</h2>
-        <p>A searchable repository of techniques, seasonal patterns, and bait guides — right inside the app.</p>
+  <!-- ============================== FEATURES BENTO GRID ============================== -->
+  <section id="features" class="py-24 md:py-32">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <p class="fade-up text-copper font-medium text-sm tracking-widest uppercase mb-4">Lake Intelligence</p>
+        <h2 class="fade-up font-serif text-4xl md:text-5xl font-bold text-stone-900 mb-6">
+          Everything the Lake Knows, in Your Pocket
+        </h2>
+        <p class="fade-up text-slate text-lg">
+          Purpose-built tools for crappie fishermen. No bass modules. No saltwater clutter. Just slabs.
+        </p>
       </div>
-      <div class="knowledge-grid">
-        <div class="knowledge-card fade-in">
-          <div class="knowledge-icon">&#127777;&#65039;</div>
-          <div>
-            <h4>Seasonal Patterns</h4>
-            <p>Pre-spawn, spawn, post-spawn, summer, and winter patterns with depth ranges, structure types, and behavior insights.</p>
-          </div>
-        </div>
-        <div class="knowledge-card fade-in">
-          <div class="knowledge-icon">&#127907;</div>
-          <div>
-            <h4>Techniques Guide</h4>
-            <p>Spider rigging, vertical jigging, long-lining, shooting docks, and more — with pros, cons, and best conditions for each.</p>
-          </div>
-        </div>
-        <div class="knowledge-card fade-in">
-          <div class="knowledge-icon">&#129416;</div>
-          <div>
-            <h4>Bait Library</h4>
-            <p>Jigs, live bait, crankbaits, and soft plastics — complete with rigging methods, color selection, and seasonal usage.</p>
-          </div>
-        </div>
-        <div class="knowledge-card fade-in">
-          <div class="knowledge-icon">&#128200;</div>
-          <div>
-            <h4>Condition Analysis</h4>
-            <p>How barometric pressure, water clarity, temperature, and current affect crappie behavior and where to find them.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- ============ TESTIMONIALS ============ -->
-  <section class="testimonials">
-    <div class="container">
-      <div class="section-header fade-in">
-        <div class="section-label">From the Water</div>
-        <h2>What Beta Testers Are Saying</h2>
-      </div>
-      <div class="testimonial-grid">
-        <div class="testimonial-card fade-in">
-          <blockquote>Finally, an app that speaks crappie. Not bass, not walleye &mdash; crappie. The thermocline feature alone is worth it.</blockquote>
-          <div class="testimonial-author">
-            <div class="testimonial-avatar">JD</div>
-            <div>
-              <div class="testimonial-name">Beta Tester</div>
-              <div class="testimonial-location">Kentucky Lake, TN</div>
-            </div>
-          </div>
-        </div>
-        <div class="testimonial-card fade-in">
-          <blockquote>The attractor map is a game-changer. Found brush piles I've been driving over for years. Put us on a limit by 9 AM.</blockquote>
-          <div class="testimonial-author">
-            <div class="testimonial-avatar">RC</div>
-            <div>
-              <div class="testimonial-name">Beta Tester</div>
-              <div class="testimonial-location">Reelfoot Lake, TN</div>
-            </div>
-          </div>
-        </div>
-        <div class="testimonial-card fade-in">
-          <blockquote>The spider rig calculator is something I didn't know I needed. Dialed in the right depth on my first drop. This app gets crappie fishing.</blockquote>
-          <div class="testimonial-author">
-            <div class="testimonial-avatar">MP</div>
-            <div>
-              <div class="testimonial-name">Beta Tester</div>
-              <div class="testimonial-location">Horseshoe Lake, AR</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+      <!-- Bento Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 stagger">
 
-  <!-- ============ WEB DASHBOARD ============ -->
-  <section class="web-dashboard" id="web-app">
-    <div class="container">
-      <div class="section-header fade-in">
-        <div class="section-label">Web App</div>
-        <h2>Plan Your Trip From Any Screen</h2>
-        <p>Subscribers get full access to SlabHaul on the web. Check conditions, scout attractors, and plan your trip from your computer before you ever leave the dock.</p>
-      </div>
-      <div class="dashboard-preview fade-in">
-        <div class="dashboard-chrome">
-          <div class="chrome-dot red"></div>
-          <div class="chrome-dot yellow"></div>
-          <div class="chrome-dot green"></div>
-          <div class="chrome-url">app.slabhaul.ai/dashboard</div>
-        </div>
-        <div class="dashboard-body">
-          <div class="dashboard-sidebar">
-            <div class="sidebar-item active">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-              Dashboard
-            </div>
-            <div class="sidebar-item">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              Attractor Map
-            </div>
-            <div class="sidebar-item">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>
-              Weather
-            </div>
-            <div class="sidebar-item">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/></svg>
-              Thermocline
-            </div>
-            <div class="sidebar-item">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-              Trip Planner
-            </div>
-            <div class="sidebar-item">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 6v6l4 2"/></svg>
-              Spider Rig Calc
-            </div>
-          </div>
-          <div class="dashboard-main">
-            <h3>Pre-Trip Dashboard &mdash; Kentucky Lake</h3>
-            <div class="dashboard-cards">
-              <div class="dash-card">
-                <div class="dash-label">Barometric</div>
-                <div class="dash-value good">30.12 &darr;</div>
+        <!-- Feature 1: Lake Intelligence — Spans 2 cols -->
+        <div class="fade-up card-hover md:col-span-2 bg-white rounded-2xl p-8 border border-stone-900/5">
+          <div class="flex flex-col md:flex-row gap-8">
+            <div class="flex-1">
+              <div class="w-10 h-10 bg-copper/10 rounded-xl flex items-center justify-center mb-5">
+                <svg class="w-5 h-5 text-copper" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
               </div>
-              <div class="dash-card">
-                <div class="dash-label">Solunar</div>
-                <div class="dash-value good">Excellent</div>
-              </div>
-              <div class="dash-card">
-                <div class="dash-label">Water Temp</div>
-                <div class="dash-value neutral">68&deg;F</div>
-              </div>
-              <div class="dash-card">
-                <div class="dash-label">Water Level</div>
-                <div class="dash-value warn">+1.2 ft</div>
-              </div>
-              <div class="dash-card">
-                <div class="dash-label">Wind</div>
-                <div class="dash-value">SSW 8 mph</div>
-              </div>
-              <div class="dash-card">
-                <div class="dash-label">Crappie Zone</div>
-                <div class="dash-value good">12-18 ft</div>
-              </div>
+              <h3 class="font-serif text-2xl font-bold text-stone-900 mb-3">Real-Time Lake Intelligence</h3>
+              <p class="text-slate leading-relaxed">
+                Water temperature, clarity, thermocline depth, and water level — pulled live from USGS and NOAA stations. Know what's happening below the surface before you launch the boat.
+              </p>
+            </div>
+            <div class="flex-1 h-48 md:h-auto rounded-xl photo-placeholder" role="img" aria-label="App screenshot showing real-time lake conditions dashboard with water temperature graph and thermocline depth indicator">
+              App screenshot: Lake conditions dashboard
             </div>
           </div>
         </div>
-      </div>
-      <div style="text-align:center;margin-top:32px;" class="fade-in">
-        <a href="#" class="btn btn-primary" onclick="openLogin(event)">Log In to Web App</a>
-        <p style="color:var(--muted);font-size:0.85rem;margin-top:12px;">Available to all Pro and Annual subscribers</p>
+
+        <!-- Feature 2: Brush Piles -->
+        <div class="fade-up card-hover bg-white rounded-2xl p-8 border border-stone-900/5">
+          <div class="w-10 h-10 bg-sage/15 rounded-xl flex items-center justify-center mb-5">
+            <svg class="w-5 h-5 text-sage" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          </div>
+          <h3 class="font-serif text-xl font-bold text-stone-900 mb-3">Brush Pile & Attractor Maps</h3>
+          <p class="text-slate leading-relaxed text-sm">
+            GPS coordinates for public fish attractors and community-shared brush piles. Stop guessing. Start fishing structure.
+          </p>
+        </div>
+
+        <!-- Feature 3: Solunar -->
+        <div class="fade-up card-hover bg-white rounded-2xl p-8 border border-stone-900/5">
+          <div class="w-10 h-10 bg-copper/10 rounded-xl flex items-center justify-center mb-5">
+            <svg class="w-5 h-5 text-copper" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+          </div>
+          <h3 class="font-serif text-xl font-bold text-stone-900 mb-3">Solunar & Bite Forecasts</h3>
+          <p class="text-slate leading-relaxed text-sm">
+            Hourly bite probability based on moon phase, barometric pressure, and water conditions. Know when the slabs are feeding.
+          </p>
+        </div>
+
+        <!-- Feature 4: Trip Logging -->
+        <div class="fade-up card-hover bg-white rounded-2xl p-8 border border-stone-900/5">
+          <div class="w-10 h-10 bg-slate/10 rounded-xl flex items-center justify-center mb-5">
+            <svg class="w-5 h-5 text-slate" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          </div>
+          <h3 class="font-serif text-xl font-bold text-stone-900 mb-3">Trip Logging</h3>
+          <p class="text-slate leading-relaxed text-sm">
+            Photo, GPS pin, conditions, and catch data — all captured in seconds. Build your personal fishing history.
+          </p>
+        </div>
+
+        <!-- Feature 5: Species Specific — Spans 2 cols -->
+        <div class="fade-up card-hover md:col-span-2 bg-stone-900 text-stone-50 rounded-2xl p-8 border border-stone-900/5">
+          <div class="flex flex-col md:flex-row items-center gap-8">
+            <div class="flex-1">
+              <div class="w-10 h-10 bg-copper/20 rounded-xl flex items-center justify-center mb-5">
+                <svg class="w-5 h-5 text-copper" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              </div>
+              <h3 class="font-serif text-2xl font-bold mb-3">100% Built for Crappie</h3>
+              <p class="text-stone-50/70 leading-relaxed">
+                Not a generic fishing app with a crappie filter. Every feature, every data point, every forecast is designed around how crappie behave. Spider rigging. Brush pile patterns. Thermocline feeding zones. If it doesn't help you catch slabs, it's not in the app.
+              </p>
+            </div>
+            <div class="flex-1 h-48 md:h-56 rounded-xl photo-placeholder bg-stone-800 text-stone-50/30" role="img" aria-label="Close-up of a trophy crappie being held at sunrise with misty lake in background">
+              Photo: Trophy crappie at sunrise
+            </div>
+          </div>
+        </div>
+
+        <!-- Feature 6: Community -->
+        <div class="fade-up card-hover bg-white rounded-2xl p-8 border border-stone-900/5">
+          <div class="w-10 h-10 bg-sage/15 rounded-xl flex items-center justify-center mb-5">
+            <svg class="w-5 h-5 text-sage" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+          </div>
+          <h3 class="font-serif text-xl font-bold text-stone-900 mb-3">Community Knowledge</h3>
+          <p class="text-slate leading-relaxed text-sm">
+            Share spots, compare catches, and tap into local lake knowledge from crappie fishermen who know the water.
+          </p>
+        </div>
+
       </div>
     </div>
   </section>
 
-  <!-- ============ PRICING ============ -->
-  <section class="pricing" id="pricing">
-    <div class="container">
-      <div class="section-header fade-in">
-        <div class="section-label">Pricing</div>
-        <h2>Choose Your Plan</h2>
-        <p>Start free during beta. Upgrade when you're ready for the full experience.</p>
+
+  <!-- ============================== PHOTO BREAK ============================== -->
+  <section class="py-0">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="h-64 md:h-96 rounded-2xl photo-placeholder overflow-hidden" role="img" aria-label="Wide panoramic view of a calm Tennessee lake at golden hour, dock with crappie boat, warm amber light reflecting off still water">
+        Panoramic: Tennessee lake at golden hour with crappie boat at dock
       </div>
-      <div class="pricing-grid">
-        <div class="pricing-card fade-in">
-          <h3>Free</h3>
-          <div class="pricing-amount">
-            <span class="currency">$</span>0
+    </div>
+  </section>
+
+
+  <!-- ============================== HOW IT WORKS ============================== -->
+  <section id="how-it-works" class="py-24 md:py-32">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <p class="fade-up text-copper font-medium text-sm tracking-widest uppercase mb-4">Simple as It Should Be</p>
+        <h2 class="fade-up font-serif text-4xl md:text-5xl font-bold text-stone-900">
+          On the Water in Three Steps
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 stagger">
+        <!-- Step 1 -->
+        <div class="fade-up text-center">
+          <div class="w-16 h-16 bg-copper/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <span class="font-serif text-2xl font-bold text-copper">1</span>
           </div>
-          <p class="pricing-description">Core features to get started on the water.</p>
-          <ul class="pricing-features">
-            <li><span class="icon">&#10003;</span> Weather dashboard</li>
-            <li><span class="icon">&#10003;</span> Lake conditions</li>
-            <li><span class="icon">&#10003;</span> Spider rig calculator</li>
-            <li><span class="icon">&#10003;</span> Knowledge base</li>
-            <li class="disabled"><span class="icon">&#10005;</span> Attractor map</li>
-            <li class="disabled"><span class="icon">&#10005;</span> AI features</li>
+          <h3 class="font-serif text-xl font-bold text-stone-900 mb-3">Download the App</h3>
+          <p class="text-slate">
+            Free on iOS, Android, and the web. No credit card. No trial countdown. Just download and go.
+          </p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="fade-up text-center">
+          <div class="w-16 h-16 bg-copper/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <span class="font-serif text-2xl font-bold text-copper">2</span>
+          </div>
+          <h3 class="font-serif text-xl font-bold text-stone-900 mb-3">Pick Your Lake</h3>
+          <p class="text-slate">
+            Select from thousands of crappie lakes. Get instant conditions, attractors, and forecasts for your water.
+          </p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="fade-up text-center">
+          <div class="w-16 h-16 bg-copper/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <span class="font-serif text-2xl font-bold text-copper">3</span>
+          </div>
+          <h3 class="font-serif text-xl font-bold text-stone-900 mb-3">Start Catching Slabs</h3>
+          <p class="text-slate">
+            Use real-time data to pick the right depth, the right structure, and the right time. Fish smarter.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================== CREDIBILITY ============================== -->
+  <section class="py-24 md:py-32 bg-white">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="fade-up max-w-3xl mx-auto text-center">
+        <div class="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-8">
+          <svg class="w-8 h-8 text-copper" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+        </div>
+        <h2 class="font-serif text-3xl md:text-4xl font-bold text-stone-900 mb-6">
+          Built by Crappie Fishermen<br>in West Tennessee
+        </h2>
+        <p class="text-slate text-lg leading-relaxed max-w-xl mx-auto mb-10">
+          We got tired of generic fishing apps that treat crappie like an afterthought. So we built the app we always wanted — one that speaks our language, knows our lakes, and respects the craft.
+        </p>
+        <div class="flex items-center justify-center gap-8 text-sm text-slate">
+          <div class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-sage" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+            USGS & NOAA Data
+          </div>
+          <div class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-sage" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+            Privacy First
+          </div>
+          <div class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-sage" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+            Made in the USA
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================== PRICING ============================== -->
+  <section id="pricing" class="py-24 md:py-32">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <p class="fade-up text-copper font-medium text-sm tracking-widest uppercase mb-4">Pricing</p>
+        <h2 class="fade-up font-serif text-4xl md:text-5xl font-bold text-stone-900">
+          Free While We're in Beta
+        </h2>
+      </div>
+
+      <div class="fade-up max-w-md mx-auto">
+        <div class="bg-white rounded-2xl p-8 border border-stone-900/5 card-hover text-center">
+          <div class="inline-flex items-center gap-2 bg-sage/15 text-sage text-xs font-semibold px-3 py-1 rounded-full mb-6">
+            <span class="w-2 h-2 bg-sage rounded-full"></span>
+            Beta Access
+          </div>
+          <div class="mb-2">
+            <span class="font-serif text-5xl font-bold text-stone-900">$0</span>
+          </div>
+          <p class="text-slate mb-8">
+            Full access to every feature. No limits. No credit card required.
+          </p>
+          <ul class="text-left space-y-3 mb-8">
+            <li class="flex items-center gap-3 text-sm text-stone-900">
+              <svg class="w-4 h-4 text-sage flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Real-time lake conditions
+            </li>
+            <li class="flex items-center gap-3 text-sm text-stone-900">
+              <svg class="w-4 h-4 text-sage flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Brush pile & attractor maps
+            </li>
+            <li class="flex items-center gap-3 text-sm text-stone-900">
+              <svg class="w-4 h-4 text-sage flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Solunar & bite forecasts
+            </li>
+            <li class="flex items-center gap-3 text-sm text-stone-900">
+              <svg class="w-4 h-4 text-sage flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Trip logging & catch history
+            </li>
+            <li class="flex items-center gap-3 text-sm text-stone-900">
+              <svg class="w-4 h-4 text-sage flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Community features
+            </li>
           </ul>
-          <button class="pricing-btn secondary" onclick="document.getElementById('signup').scrollIntoView({behavior:'smooth'})">Join Waitlist</button>
-        </div>
-        <div class="pricing-card featured fade-in">
-          <h3>Pro</h3>
-          <div class="pricing-amount">
-            <span class="currency">$</span>7<span class="period">/mo</span>
-          </div>
-          <p class="pricing-description">Full access for the serious crappie fisherman.</p>
-          <ul class="pricing-features">
-            <li><span class="icon">&#10003;</span> Everything in Free</li>
-            <li><span class="icon">&#10003;</span> Full attractor map</li>
-            <li><span class="icon">&#10003;</span> Thermocline predictor</li>
-            <li><span class="icon">&#10003;</span> AI bait recommendations</li>
-            <li><span class="icon">&#10003;</span> Trip log &amp; analytics</li>
-            <li><span class="icon">&#10003;</span> Priority new lakes</li>
-          </ul>
-          <button class="pricing-btn primary" onclick="document.getElementById('signup').scrollIntoView({behavior:'smooth'})">Get Early Access</button>
-        </div>
-        <div class="pricing-card fade-in">
-          <h3>Annual</h3>
-          <div class="pricing-amount">
-            <span class="currency">$</span>59<span class="period">/yr</span>
-          </div>
-          <p class="pricing-description">Best value. Save 30% with annual billing.</p>
-          <ul class="pricing-features">
-            <li><span class="icon">&#10003;</span> Everything in Pro</li>
-            <li><span class="icon">&#10003;</span> 2 months free</li>
-            <li><span class="icon">&#10003;</span> Early access to new features</li>
-            <li><span class="icon">&#10003;</span> Tournament mode</li>
-            <li><span class="icon">&#10003;</span> Unlimited trip history</li>
-            <li><span class="icon">&#10003;</span> Exclusive lake requests</li>
-          </ul>
-          <button class="pricing-btn secondary" onclick="document.getElementById('signup').scrollIntoView({behavior:'smooth'})">Get Early Access</button>
+          <a href="https://apps.apple.com/app/slabhaul-crappie-companion/id6759182169" class="block w-full bg-stone-900 text-stone-50 font-medium py-3.5 rounded-xl hover:bg-stone-800 transition-colors text-center">
+            Download Free
+          </a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ============ FAQ ============ -->
-  <section class="faq" id="faq">
-    <div class="container">
-      <div class="section-header fade-in">
-        <div class="section-label">FAQ</div>
-        <h2>Frequently Asked Questions</h2>
-      </div>
-      <div class="faq-grid">
-        <div class="faq-item fade-in">
-          <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
-            What makes SlabHaul different from other fishing apps?
-            <span class="arrow">&#9660;</span>
-          </button>
-          <div class="faq-answer">
-            <div class="faq-answer-inner">SlabHaul is the only fishing app built 100% for crappie. Every feature — from the attractor map to the thermocline predictor to the spider rig calculator — is designed specifically for how crappie fishermen think and fish. We don't try to be everything for everyone.</div>
-          </div>
-        </div>
-        <div class="faq-item fade-in">
-          <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
-            Where does the attractor location data come from?
-            <span class="arrow">&#9660;</span>
-          </button>
-          <div class="faq-answer">
-            <div class="faq-answer-inner">Our attractor data is sourced from state wildlife agencies including TWRA, AGFC, and KDFWR. These are official brush pile, stake bed, and PVC tree locations placed by fisheries management programs. We verify and format this data for easy navigation.</div>
-          </div>
-        </div>
-        <div class="faq-item fade-in">
-          <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
-            What lakes are currently supported?
-            <span class="arrow">&#9660;</span>
-          </button>
-          <div class="faq-answer">
-            <div class="faq-answer-inner">We currently have full attractor maps for Kentucky Lake (TN/KY), Reelfoot Lake (TN), and Horseshoe Lake (AR). Weather and water data is available for 85+ lakes. We're adding new lakes across the Southeast regularly — Pro and Annual subscribers can request priority lake additions.</div>
-          </div>
-        </div>
-        <div class="faq-item fade-in">
-          <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
-            Is SlabHaul available on Android?
-            <span class="arrow">&#9660;</span>
-          </button>
-          <div class="faq-answer">
-            <div class="faq-answer-inner">SlabHaul is launching first on iOS. Android is on the roadmap and will follow shortly after the iOS launch. Join the waitlist to be notified when your platform is available.</div>
-          </div>
-        </div>
-        <div class="faq-item fade-in">
-          <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
-            Does the app work offline?
-            <span class="arrow">&#9660;</span>
-          </button>
-          <div class="faq-answer">
-            <div class="faq-answer-inner">Yes. Attractor locations, the knowledge base, and the spider rig calculator all work offline. Weather and water level data requires a connection to fetch the latest readings, but previously loaded data is cached on your device.</div>
-          </div>
-        </div>
-        <div class="faq-item fade-in">
-          <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
-            Is it free during beta?
-            <span class="arrow">&#9660;</span>
-          </button>
-          <div class="faq-answer">
-            <div class="faq-answer-inner">Yes. All beta testers get full access to every feature at no cost. Once we officially launch, you'll be able to choose the plan that fits your needs. Early supporters will receive special pricing as a thank you.</div>
-          </div>
-        </div>
+
+  <!-- ============================== FINAL CTA ============================== -->
+  <section class="py-24 md:py-32 bg-stone-900 relative overflow-hidden">
+    <div class="absolute inset-0 photo-placeholder opacity-10" role="img" aria-label="Aerial view of a lake at dawn with fishing boats creating wake patterns on glassy water"></div>
+    <div class="relative max-w-3xl mx-auto px-6 text-center">
+      <h2 class="fade-up font-serif text-4xl md:text-5xl font-bold text-stone-50 mb-6">
+        Your Next Slab Is Waiting
+      </h2>
+      <p class="fade-up text-stone-50/70 text-lg mb-10 max-w-xl mx-auto">
+        Join crappie fishermen across the country who are fishing smarter with real-time lake intelligence.
+      </p>
+      <div class="fade-up flex flex-wrap justify-center gap-4">
+        <a href="https://apps.apple.com/app/slabhaul-crappie-companion/id6759182169" class="inline-flex items-center gap-3 bg-copper text-white font-medium px-6 py-3.5 rounded-xl hover:bg-copper-dark transition-colors">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          App Store
+        </a>
+        <a href="https://play.google.com/store/apps/details?id=com.slabhaulapp.slabhaul" class="inline-flex items-center gap-3 bg-copper text-white font-medium px-6 py-3.5 rounded-xl hover:bg-copper-dark transition-colors">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.49c-.35-.55-.18-1.44-.18-1.44L13.83 12 3 1.95S2.83 1.06 3.18.51c.35-.55 1.01-.5 1.01-.5l13.39 7.72L13.83 12l3.75 4.27L4.19 23.99s-.66.05-1.01-.5zM20.16 10.51L17 8.7l-3.17 3.3 3.17 3.3 3.16-1.81c1.12-.65 1.12-1.69 0-2.98z"/></svg>
+          Google Play
+        </a>
+        <a href="https://slabhaulapp.com" class="inline-flex items-center gap-2 border-2 border-stone-50/20 text-stone-50 font-medium px-6 py-3.5 rounded-xl hover:border-copper hover:text-copper transition-colors">
+          Try Web App
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </a>
       </div>
     </div>
   </section>
 
-  <!-- ============ FINAL CTA ============ -->
-  <section class="final-cta" id="signup">
-    <div class="container">
-      <div id="signup-form-container">
-        <h2>Ready to Haul More Slabs?</h2>
-        <p>Join hundreds of crappie fishermen getting early access to the only app built for the way you fish.</p>
-        <form class="cta-form" id="signup-form" action="https://formspree.io/f/mqeyzkrp" method="POST">
-          <input type="email" name="email" placeholder="Enter your email" required aria-label="Email address">
-          <button type="submit" id="signup-btn">Get Early Access</button>
-        </form>
-        <p class="form-error-msg" id="signup-error">Something went wrong. Please try again.</p>
-        <p class="cta-note">Free during beta &middot; No spam, ever &middot; Unsubscribe anytime</p>
-      </div>
-      <div class="form-success" id="signup-success">
-        <div class="checkmark">&#10003;</div>
-        <h3>You're on the list!</h3>
-        <p>We'll email you as soon as SlabHaul is ready. Welcome aboard.</p>
-      </div>
-    </div>
-  </section>
-  </main>
 
-  <!-- ============ FOOTER ============ -->
-  <footer>
-    <div class="container">
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <a href="/" class="logo">Slab<span>Haul</span></a>
-          <p>The crappie fishing intelligence app. Real-time data, attractor maps, and AI-powered insights. Built in Tennessee.</p>
+  <!-- ============================== FOOTER ============================== -->
+  <footer class="bg-stone-900 border-t border-stone-50/10 py-12">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+        <div>
+          <span class="font-serif font-bold text-lg text-stone-50">SlabHaul</span>
+          <p class="text-stone-50/50 text-sm mt-1">The crappie fishing intelligence app.</p>
         </div>
-        <div class="footer-col">
-          <h4>Product</h4>
-          <a href="#features">Features</a>
-          <a href="#lakes">Lakes</a>
-          <a href="#pricing">Pricing</a>
-          <a href="#faq">FAQ</a>
-        </div>
-        <div class="footer-col">
-          <h4>Resources</h4>
-          <a href="#signup">Get Early Access</a>
-          <a href="mailto:support@slabhaul.ai">Contact</a>
-        </div>
-        <div class="footer-col">
-          <h4>Connect</h4>
-          <a href="https://slabhaul.ai">slabhaul.ai</a>
-          <a href="https://slabhaulapp.com">slabhaulapp.com</a>
+        <div class="flex flex-wrap items-center gap-6 text-sm">
+          <a href="/privacy.html" class="text-stone-50/50 hover:text-stone-50 transition-colors">Privacy Policy</a>
+          <a href="/terms.html" class="text-stone-50/50 hover:text-stone-50 transition-colors">Terms of Service</a>
+          <a href="https://slabhaulapp.com" class="text-stone-50/50 hover:text-stone-50 transition-colors">Web App</a>
+          <a href="https://testflight.apple.com/join/K1uUz5dj" class="text-stone-50/50 hover:text-stone-50 transition-colors">TestFlight Beta</a>
         </div>
       </div>
-      <div class="footer-bottom">
-        <p>&copy; 2026 SlabHaul. A Velocity Venture Holdings product.</p>
-        <div class="footer-links">
-          <a href="/privacy.html">Privacy Policy</a>
-          <a href="/terms.html">Terms of Service</a>
-        </div>
+      <div class="mt-8 pt-8 border-t border-stone-50/5 text-center">
+        <p class="text-stone-50/30 text-xs">&copy; 2025 Velocity Venture Holdings. All rights reserved.</p>
       </div>
     </div>
   </footer>
 
-  <!-- ============ LOGIN MODAL ============ -->
-  <div class="modal-overlay" id="login-modal" role="dialog" aria-modal="true" aria-labelledby="login-title">
-    <div class="modal">
-      <button class="modal-close" onclick="closeLogin()" aria-label="Close login">&times;</button>
-      <div class="modal-logo">
-        <img src="/assets/images/slabhaul_icon.png" alt="SlabHaul" width="56" height="56" style="border-radius:14px;">
+
+  <!-- ============================== LOGIN MODAL ============================== -->
+  <div class="modal-overlay fixed inset-0 z-[100] bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-6"
+       :class="{ 'open': loginOpen }"
+       @click.self="loginOpen = false"
+       @keydown.escape.window="loginOpen = false"
+       id="login-modal">
+    <div class="bg-white rounded-2xl p-8 w-full max-w-sm shadow-2xl" @click.stop>
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="font-serif text-xl font-bold text-stone-900">Log In</h3>
+        <button @click="loginOpen = false" class="text-slate hover:text-stone-900 transition-colors">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
       </div>
-      <h2 id="login-title">Log in to SlabHaul</h2>
-      <p class="modal-subtitle">Access your pre-trip dashboard and plan from any device.</p>
 
-      <div class="login-error" id="login-error" role="alert">Invalid email or password. Please try again.</div>
+      <div id="login-error" class="hidden mb-4 bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl"></div>
 
-      <form id="login-form" onsubmit="handleLogin(event)">
-        <div class="form-group">
-          <label for="login-email">Email</label>
-          <input type="email" id="login-email" name="email" placeholder="you@example.com" required autocomplete="email">
+      <form onsubmit="handleLogin(event)" class="space-y-4">
+        <div>
+          <label for="login-email" class="block text-sm font-medium text-stone-900 mb-1.5">Email</label>
+          <input type="email" id="login-email" required
+                 class="w-full px-4 py-3 bg-stone-100 border border-stone-900/10 rounded-xl text-stone-900 text-sm focus:outline-none focus:ring-2 focus:ring-copper/30 focus:border-copper transition-colors"
+                 placeholder="you@email.com">
         </div>
-        <div class="form-group">
-          <label for="login-password">Password</label>
-          <input type="password" id="login-password" name="password" placeholder="Your password" required autocomplete="current-password">
+        <div>
+          <label for="login-password" class="block text-sm font-medium text-stone-900 mb-1.5">Password</label>
+          <input type="password" id="login-password" required
+                 class="w-full px-4 py-3 bg-stone-100 border border-stone-900/10 rounded-xl text-stone-900 text-sm focus:outline-none focus:ring-2 focus:ring-copper/30 focus:border-copper transition-colors"
+                 placeholder="Your password">
         </div>
-        <button type="submit" class="login-btn" id="login-submit-btn">Log In</button>
+        <button type="submit" id="login-submit-btn"
+                class="w-full bg-stone-900 text-stone-50 font-medium py-3 rounded-xl hover:bg-stone-800 transition-colors text-sm">
+          Log In
+        </button>
       </form>
 
-      <div class="login-divider">or continue with</div>
-
-      <div class="oauth-buttons">
-        <button class="oauth-btn" onclick="handleOAuth('google')" type="button">
-          <svg width="20" height="20" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-          Continue with Google
-        </button>
-        <button class="oauth-btn" onclick="handleOAuth('apple')" type="button">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
-          Continue with Apple
-        </button>
+      <div class="mt-4 text-center">
+        <button onclick="handleForgotPassword(event)" class="text-xs text-copper hover:text-copper-dark transition-colors">Forgot password?</button>
       </div>
 
-      <div class="login-footer">
-        <p>Don't have an account? <a href="#signup" onclick="closeLogin()">Join the waitlist</a></p>
-        <p style="margin-top:8px;"><a href="#" onclick="handleForgotPassword(event)">Forgot password?</a></p>
+      <div class="relative my-6">
+        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-stone-900/10"></div></div>
+        <div class="relative flex justify-center"><span class="px-3 bg-white text-xs text-slate">or continue with</span></div>
       </div>
+
+      <button onclick="handleOAuth('google')"
+              class="w-full flex items-center justify-center gap-3 border border-stone-900/10 py-3 rounded-xl hover:bg-stone-50 transition-colors text-sm font-medium text-stone-900">
+        <svg class="w-4 h-4" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        Google
+      </button>
     </div>
   </div>
 
-  <!-- ============ SCRIPTS ============ -->
-  <script>
-    // Header scroll effect
-    const header = document.getElementById('header');
-    window.addEventListener('scroll', () => {
-      header.classList.toggle('scrolled', window.scrollY > 50);
-    });
 
-    // Scroll-triggered fade-in animations
+  <!-- ============================== SCRIPTS ============================== -->
+  <script>
+    // Scroll-triggered animations
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -2275,50 +634,17 @@
       });
     }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
-    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-    // Close mobile nav on link click
-    document.querySelectorAll('#nav a').forEach(link => {
-      link.addEventListener('click', () => {
-        document.getElementById('nav').classList.remove('open');
-      });
-    });
-
-    // Smooth scroll for anchor links (skip login/oauth links)
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function(e) {
-        if (this.getAttribute('href') === '#') return;
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      });
-    });
-
-    // ========== LOGIN MODAL ==========
+    // Login modal helpers (for non-Alpine onclick handlers)
     function openLogin(e) {
       if (e) e.preventDefault();
-      document.getElementById('login-modal').classList.add('open');
-      document.body.style.overflow = 'hidden';
-      setTimeout(() => document.getElementById('login-email').focus(), 100);
+      document.querySelector('[x-data]').__x.$data.loginOpen = true;
     }
 
     function closeLogin() {
-      document.getElementById('login-modal').classList.remove('open');
-      document.body.style.overflow = '';
-      document.getElementById('login-error').classList.remove('show');
+      document.querySelector('[x-data]').__x.$data.loginOpen = false;
     }
-
-    // Close modal on overlay click
-    document.getElementById('login-modal').addEventListener('click', function(e) {
-      if (e.target === this) closeLogin();
-    });
-
-    // Close modal on Escape
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') closeLogin();
-    });
 
     // Handle login form
     async function handleLogin(e) {
@@ -2330,7 +656,7 @@
 
       btn.disabled = true;
       btn.textContent = 'Logging in...';
-      errorEl.classList.remove('show');
+      errorEl.classList.add('hidden');
 
       const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
 
@@ -2338,10 +664,7 @@
         btn.disabled = false;
         btn.textContent = 'Log In';
         errorEl.textContent = error.message;
-        errorEl.style.background = '';
-        errorEl.style.borderColor = '';
-        errorEl.style.color = '';
-        errorEl.classList.add('show');
+        errorEl.classList.remove('hidden');
         return;
       }
 
@@ -2397,59 +720,11 @@
 
     // Auto-open login modal when redirected with #login hash
     if (window.location.hash === '#login') {
-      openLogin();
+      setTimeout(() => {
+        document.querySelector('[x-data]').__x.$data.loginOpen = true;
+      }, 100);
       history.replaceState(null, '', window.location.pathname);
     }
-
-    // ========== FORM AJAX SUBMISSION ==========
-    document.querySelectorAll('.cta-form').forEach(form => {
-      form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const btn = this.querySelector('button');
-        const input = this.querySelector('input');
-        const container = this.closest('[id$="-container"]') || this.parentElement;
-        const successEl = container.parentElement.querySelector('.form-success');
-        const errorEl = container.querySelector('.form-error-msg') || container.parentElement.querySelector('.form-error-msg');
-
-        btn.disabled = true;
-        btn.textContent = 'Submitting...';
-
-        try {
-          const response = await fetch(this.action, {
-            method: 'POST',
-            body: new FormData(this),
-            headers: { 'Accept': 'application/json' }
-          });
-
-          if (response.ok) {
-            if (successEl) {
-              container.style.display = 'none';
-              successEl.classList.add('show');
-            } else {
-              input.value = '';
-              btn.textContent = 'Subscribed!';
-              btn.style.background = 'rgba(0, 212, 170, 0.2)';
-              btn.style.color = '#00d4aa';
-              setTimeout(() => {
-                btn.textContent = 'Get Early Access';
-                btn.style.background = '';
-                btn.style.color = '';
-                btn.disabled = false;
-              }, 3000);
-            }
-          } else {
-            throw new Error('Submit failed');
-          }
-        } catch (err) {
-          btn.disabled = false;
-          btn.textContent = 'Get Early Access';
-          if (errorEl) {
-            errorEl.classList.add('show');
-            setTimeout(() => errorEl.classList.remove('show'), 5000);
-          }
-        }
-      });
-    });
   </script>
 </body>
 </html>
