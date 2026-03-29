@@ -132,17 +132,6 @@
       box-shadow: 0 12px 40px rgba(28, 25, 23, 0.1);
     }
 
-    .photo-placeholder {
-      background: linear-gradient(135deg, #E7DDD3 0%, #D4C8BA 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #94A3B8;
-      font-size: 0.8rem;
-      text-align: center;
-      padding: 1rem;
-    }
-
     .modal-overlay {
       opacity: 0;
       pointer-events: none;
@@ -254,10 +243,74 @@
       0% { transform: scale(1); opacity: 0.3; }
       100% { transform: scale(2); opacity: 0; }
     }
+
+    /* Chat bubble styles for Uncle Slab */
+    .chat-bubble {
+      position: relative;
+      background: white;
+      border-radius: 16px 16px 16px 4px;
+      padding: 16px 20px;
+      border: 1px solid rgba(28, 25, 23, 0.08);
+      box-shadow: 0 2px 8px rgba(28, 25, 23, 0.04);
+    }
+    .chat-bubble-user {
+      position: relative;
+      background: #1C1917;
+      color: #FAFAF9;
+      border-radius: 16px 16px 4px 16px;
+      padding: 14px 18px;
+    }
+
+    /* Audio player mockup */
+    .audio-waveform {
+      display: flex;
+      align-items: end;
+      gap: 2px;
+      height: 32px;
+    }
+    .audio-waveform span {
+      width: 3px;
+      background: #C2703E;
+      border-radius: 2px;
+      animation: waveform 1.2s ease-in-out infinite;
+    }
+    @keyframes waveform {
+      0%, 100% { height: 20%; }
+      50% { height: 100%; }
+    }
+
+    /* Pricing toggle */
+    .pricing-toggle {
+      position: relative;
+      width: 56px;
+      height: 28px;
+      background: #D4C8BA;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .pricing-toggle.active {
+      background: #C2703E;
+    }
+    .pricing-toggle::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 24px;
+      height: 24px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.3s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+    .pricing-toggle.active::after {
+      transform: translateX(28px);
+    }
   </style>
 </head>
 
-<body class="bg-stone-100 text-stone-900 antialiased" x-data="{ loginOpen: false, mobileMenuOpen: false, faqOpen: null }">
+<body class="bg-stone-100 text-stone-900 antialiased" x-data="{ loginOpen: false, mobileMenuOpen: false, faqOpen: null, annual: false }">
 
   <!-- Skip Link -->
   <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 focus:z-[200] focus:bg-copper focus:text-white focus:px-4 focus:py-2 focus:text-sm font-bold">Skip to main content</a>
@@ -299,16 +352,16 @@
   <!-- ============================== HERO ============================== -->
   <main id="main-content">
   <section class="relative min-h-screen flex items-center pt-16 overflow-hidden">
-    <div class="absolute inset-0 photo-placeholder opacity-30" role="img" aria-label="Misty dawn on a Tennessee lake with crappie boat silhouetted against golden sunrise"></div>
-    <div class="absolute inset-0 bg-gradient-to-b from-stone-100/80 via-stone-100/60 to-stone-100"></div>
+    <img src="assets/images/photos/hero-lake-dawn.png" alt="Misty dawn on a Tennessee lake with crappie boat silhouetted against golden sunrise" class="absolute inset-0 w-full h-full object-cover">
+    <div class="absolute inset-0 bg-gradient-to-b from-stone-900/70 via-stone-900/50 to-stone-900/80"></div>
 
     <div class="relative max-w-6xl mx-auto px-6 py-24 md:py-32">
       <div class="max-w-3xl">
-        <p class="fade-up text-copper font-medium text-sm tracking-widest uppercase mb-6">Built for Crappie Fishermen</p>
-        <h1 class="fade-up font-serif text-5xl md:text-6xl lg:text-7xl font-bold text-stone-900 leading-[1.1] mb-6">
+        <p class="fade-up text-copper-light font-medium text-sm tracking-widest uppercase mb-6">Built for Crappie Fishermen</p>
+        <h1 class="fade-up font-serif text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] mb-6">
           The Only Fishing App Built for Crappie.
         </h1>
-        <p class="fade-up text-lg md:text-xl text-slate max-w-xl mb-4 leading-relaxed">
+        <p class="fade-up text-lg md:text-xl text-stone-50/80 max-w-xl mb-4 leading-relaxed">
           Real-time lake intelligence, brush pile maps, thermocline predictions, and solunar forecasts &mdash; everything you need to find slabs, nothing you don't.
         </p>
         <p class="fade-up text-copper font-semibold text-base mb-10">
@@ -316,28 +369,20 @@
         </p>
 
         <div class="fade-up flex flex-wrap gap-4 mb-6">
-          <a href="https://apps.apple.com/app/slabhaul-crappie-companion/id6759182169" class="inline-flex items-center gap-3 bg-stone-900 text-stone-50 font-medium px-6 py-3.5 rounded-xl hover:bg-stone-800 transition-colors">
+          <a href="https://apps.apple.com/app/slabhaul-crappie-companion/id6759182169" class="inline-flex items-center gap-3 bg-copper text-white font-medium px-6 py-3.5 rounded-xl hover:bg-copper-dark transition-colors">
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
             App Store
           </a>
-          <a href="https://play.google.com/store/apps/details?id=com.slabhaulapp.slabhaul" class="inline-flex items-center gap-3 bg-stone-900 text-stone-50 font-medium px-6 py-3.5 rounded-xl hover:bg-stone-800 transition-colors">
+          <a href="https://play.google.com/store/apps/details?id=com.slabhaulapp.slabhaul" class="inline-flex items-center gap-3 bg-white/10 backdrop-blur-sm text-white font-medium px-6 py-3.5 rounded-xl hover:bg-white/20 transition-colors border border-white/20">
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.49c-.35-.55-.18-1.44-.18-1.44L13.83 12 3 1.95S2.83 1.06 3.18.51c.35-.55 1.01-.5 1.01-.5l13.39 7.72L13.83 12l3.75 4.27L4.19 23.99s-.66.05-1.01-.5zM20.16 10.51L17 8.7l-3.17 3.3 3.17 3.3 3.16-1.81c1.12-.65 1.12-1.69 0-2.98z"/></svg>
             Google Play
           </a>
-          <a href="https://slabhaulapp.com" class="inline-flex items-center gap-2 border-2 border-stone-900/20 text-stone-900 font-medium px-6 py-3.5 rounded-xl hover:border-copper hover:text-copper transition-colors">
+          <a href="https://slabhaulapp.com" class="inline-flex items-center gap-2 border-2 border-white/30 text-white font-medium px-6 py-3.5 rounded-xl hover:border-copper hover:text-copper transition-colors">
             Try Web App
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
           </a>
         </div>
-        <p class="fade-up text-slate text-sm">Free during beta &middot; No credit card required</p>
-      </div>
-
-      <div class="fade-up absolute right-0 top-1/2 -translate-y-1/2 hidden lg:block">
-        <div class="w-72 h-[580px] bg-stone-900 rounded-[2.5rem] p-3 shadow-2xl rotate-2">
-          <div class="w-full h-full rounded-[2rem] photo-placeholder bg-stone-800 text-stone-50/40 text-xs">
-            App screenshot: Lake dashboard showing water temp 68&deg;F, thermocline at 14ft, bite forecast 87%
-          </div>
-        </div>
+        <p class="fade-up text-stone-50/60 text-sm">Free during beta &middot; No credit card required</p>
       </div>
     </div>
   </section>
@@ -502,7 +547,7 @@
   </section>
 
 
-  <!-- ============================== DEEP DIVE: WEATHER ============================== -->
+  <!-- ============================== DEEP DIVE: WEATHER + PHOTO ============================== -->
   <section class="py-24 md:py-32">
     <div class="max-w-6xl mx-auto px-6">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center fade-up">
@@ -564,7 +609,7 @@
   </section>
 
 
-  <!-- ============================== DEEP DIVE: THERMOCLINE ============================== -->
+  <!-- ============================== DEEP DIVE: THERMOCLINE + SPIDER RIG PHOTO ============================== -->
   <section class="py-24 md:py-32 bg-white">
     <div class="max-w-6xl mx-auto px-6">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center fade-up">
@@ -593,11 +638,445 @@
             </li>
           </ul>
         </div>
-        <div class="depth-diagram">
-          <div class="depth-layer warm">Epilimnion &middot; 78&deg;F</div>
-          <div class="fish-zone">Crappie Zone &middot; 12-18 ft</div>
-          <div class="depth-layer thermo">Thermocline &middot; 68&deg;F</div>
-          <div class="depth-layer cold">Hypolimnion &middot; 52&deg;F</div>
+        <div class="space-y-5">
+          <div class="depth-diagram">
+            <div class="depth-layer warm">Epilimnion &middot; 78&deg;F</div>
+            <div class="fish-zone">Crappie Zone &middot; 12-18 ft</div>
+            <div class="depth-layer thermo">Thermocline &middot; 68&deg;F</div>
+            <div class="depth-layer cold">Hypolimnion &middot; 52&deg;F</div>
+          </div>
+          <img src="assets/images/photos/spider-rigging-boat.png" alt="Spider rig setup on a crappie fishing boat at sunrise" class="w-full h-48 object-cover rounded-2xl shadow-lg" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================== DEEP DIVE: BAIT + PHOTOS ============================== -->
+  <section class="py-24 md:py-32">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center fade-up">
+        <div class="order-2 lg:order-1 grid grid-cols-2 gap-4">
+          <img src="assets/images/photos/bait-collection.png" alt="Overhead flat-lay of crappie jigs and baits arranged on weathered wood" class="w-full h-56 object-cover rounded-2xl shadow-lg" loading="lazy">
+          <img src="assets/images/photos/jig-chartreuse.png" alt="Chartreuse crappie jig product shot" class="w-full h-56 object-cover rounded-2xl shadow-lg" loading="lazy">
+        </div>
+        <div class="order-1 lg:order-2">
+          <p class="text-copper font-medium text-sm tracking-widest uppercase mb-4">Bait Intelligence</p>
+          <h2 class="font-serif text-3xl md:text-4xl font-bold text-stone-900 mb-6">The Right Bait, Right Now</h2>
+          <p class="text-slate text-base leading-relaxed mb-8">
+            Conditions-based bait recommendations that factor in water clarity, temperature, season, and what's been producing. From jig colors to live bait, we help you tie on the right thing.
+          </p>
+          <ul class="space-y-3">
+            <li class="flex items-start gap-3 text-sm text-stone-900">
+              <svg class="w-4 h-4 text-sage flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Color recommendations by water clarity
+            </li>
+            <li class="flex items-start gap-3 text-sm text-stone-900">
+              <svg class="w-4 h-4 text-sage flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Seasonal bait patterns
+            </li>
+            <li class="flex items-start gap-3 text-sm text-stone-900">
+              <svg class="w-4 h-4 text-sage flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Jig, live bait, and crankbait library
+            </li>
+            <li class="flex items-start gap-3 text-sm text-stone-900">
+              <svg class="w-4 h-4 text-sage flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Rigging methods and tips
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================== ASK UNCLE SLAB — AI ASSISTANT ============================== -->
+  <section id="uncle-slab" class="py-24 md:py-32 bg-stone-900 relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-stone-900 via-stone-900/95 to-stone-800"></div>
+    <div class="relative max-w-6xl mx-auto px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div class="fade-up">
+          <p class="text-copper font-medium text-sm tracking-widest uppercase mb-4">AI Fishing Assistant</p>
+          <h2 class="font-serif text-3xl md:text-4xl font-bold text-white mb-4">Ask Uncle Slab</h2>
+          <p class="text-copper-light font-serif text-lg italic mb-6">Like having a crappie fishing legend in your pocket.</p>
+          <p class="text-stone-50/70 text-base leading-relaxed mb-8">
+            Uncle Slab is your AI fishing buddy &mdash; the kind of old-timer who's forgotten more about crappie than most people will ever learn. Ask him anything. He's backed by a growing database of crappie fishing knowledge, scraped and updated nightly from the best sources on the water.
+          </p>
+          <p class="text-stone-50/70 text-base leading-relaxed mb-8">
+            He's not a corporate chatbot. He talks like a fisherman because he was built by fishermen. No jargon, no fluff &mdash; just straight answers from decades of compiled crappie wisdom.
+          </p>
+          <div class="flex items-center gap-4">
+            <img src="assets/images/photos/uncle-slab-avatar.png" alt="Uncle Slab — friendly old fisherman AI mascot character" class="w-16 h-16 rounded-full object-cover shadow-xl border-2 border-copper" loading="lazy">
+            <div>
+              <div class="text-white font-serif font-bold">Uncle Slab</div>
+              <div class="text-stone-50/50 text-sm">Your AI Crappie Advisor</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="fade-up space-y-4">
+          <!-- Chat mockup -->
+          <div class="chat-bubble-user text-sm">
+            Uncle Slab, what's the best bait for stained water in March?
+          </div>
+          <div class="chat-bubble">
+            <div class="flex items-start gap-3">
+              <img src="assets/images/photos/uncle-slab-avatar.png" alt="Uncle Slab avatar" class="w-8 h-8 rounded-full object-cover flex-shrink-0" loading="lazy">
+              <p class="text-stone-900 text-sm leading-relaxed">
+                In stained water come March, you want something they can see and feel. I'd go with a 1/16 oz chartreuse and orange tube jig &mdash; slow fall under a slip float set about 8-10 feet. The pre-spawn fish are moving up and they're aggressive. If tubes aren't getting it done, switch to a Bobby Garland Baby Shad in monkey milk.
+              </p>
+            </div>
+          </div>
+
+          <div class="chat-bubble-user text-sm">
+            What depth should I fish when the thermocline is at 15 feet?
+          </div>
+          <div class="chat-bubble">
+            <div class="flex items-start gap-3">
+              <img src="assets/images/photos/uncle-slab-avatar.png" alt="Uncle Slab avatar" class="w-8 h-8 rounded-full object-cover flex-shrink-0" loading="lazy">
+              <p class="text-stone-900 text-sm leading-relaxed">
+                If the thermocline's sitting at 15 feet, your crappie are gonna be right at or just above it &mdash; that 12 to 15 foot range. Set your spider rig jigs staggered between 11 and 14 feet. The big ones like to suspend just above that break where the oxygen's still good.
+              </p>
+            </div>
+          </div>
+
+          <div class="chat-bubble-user text-sm">
+            Is the bite going to be any good this weekend at Reelfoot?
+          </div>
+          <div class="chat-bubble">
+            <div class="flex items-start gap-3">
+              <img src="assets/images/photos/uncle-slab-avatar.png" alt="Uncle Slab avatar" class="w-8 h-8 rounded-full object-cover flex-shrink-0" loading="lazy">
+              <p class="text-stone-900 text-sm leading-relaxed">
+                Looking at the forecast &mdash; barometer's been steady, wind's supposed to lay down Saturday morning, and we've got a waxing moon. I'd rate it an 8 out of 10. Get out there early, fish the cypress stumps on the south end. They've been stacked up in 6-8 feet.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================== MORNING CRAPPIE REPORT ============================== -->
+  <section id="morning-report" class="py-24 md:py-32">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center fade-up">
+        <div>
+          <p class="text-copper font-medium text-sm tracking-widest uppercase mb-4">Daily Briefing</p>
+          <h2 class="font-serif text-3xl md:text-4xl font-bold text-stone-900 mb-4">The Morning Crappie Report</h2>
+          <p class="text-copper font-serif text-lg italic mb-6">Your daily crappie briefing. Read it or listen on the drive to the lake.</p>
+          <p class="text-slate text-base leading-relaxed mb-6">
+            Fresh crappie intelligence every morning &mdash; 15 to 20 minutes of everything you need to know before you launch. Lake conditions, bite forecasts, what's working this week, tournament news, and seasonal tips. All voiced by Uncle Slab himself.
+          </p>
+          <p class="text-slate text-base leading-relaxed mb-8">
+            Prefer to read? Every episode has a full text version in the app. Prefer to listen? Hit play on the drive to the ramp. It's your morning fishing brief, however you take it.
+          </p>
+          <ul class="space-y-3">
+            <li class="flex items-start gap-3 text-sm text-stone-900">
+              <svg class="w-4 h-4 text-sage flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Fresh report every morning by 5 AM
+            </li>
+            <li class="flex items-start gap-3 text-sm text-stone-900">
+              <svg class="w-4 h-4 text-sage flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Read or listen &mdash; text + audio for every episode
+            </li>
+            <li class="flex items-start gap-3 text-sm text-stone-900">
+              <svg class="w-4 h-4 text-sage flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Voiced by Uncle Slab (AI voice synthesis)
+            </li>
+            <li class="flex items-start gap-3 text-sm text-stone-900">
+              <svg class="w-4 h-4 text-sage flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Lake conditions, bite forecasts, tournament news
+            </li>
+          </ul>
+        </div>
+
+        <!-- Audio player mockup -->
+        <div class="space-y-4">
+          <div class="bg-white rounded-2xl p-6 border border-stone-900/5 shadow-xl">
+            <div class="flex items-center gap-4 mb-5">
+              <img src="assets/images/photos/uncle-slab-avatar.png" alt="Uncle Slab avatar" class="w-14 h-14 rounded-xl object-cover shadow-md" loading="lazy">
+              <div>
+                <div class="text-xs text-copper font-medium uppercase tracking-wider">The Morning Crappie Report</div>
+                <div class="font-serif font-bold text-stone-900">Saturday Morning &mdash; Kentucky Lake</div>
+                <div class="text-slate text-xs mt-0.5">March 28, 2026 &middot; 17 min</div>
+              </div>
+            </div>
+
+            <!-- Progress bar -->
+            <div class="mb-4">
+              <div class="w-full h-1.5 bg-stone-100 rounded-full overflow-hidden">
+                <div class="h-full bg-copper rounded-full" style="width:35%"></div>
+              </div>
+              <div class="flex justify-between text-xs text-slate mt-1">
+                <span>5:42</span>
+                <span>17:08</span>
+              </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="flex items-center justify-center gap-6">
+              <button class="text-slate hover:text-stone-900 transition-colors">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0019 16V8a1 1 0 00-1.6-.8l-5.333 4zM4.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0011 16V8a1 1 0 00-1.6-.8l-5.334 4z"/></svg>
+              </button>
+              <button class="w-12 h-12 bg-copper rounded-full flex items-center justify-center text-white shadow-lg hover:bg-copper-dark transition-colors">
+                <svg class="w-5 h-5 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              </button>
+              <button class="text-slate hover:text-stone-900 transition-colors">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.933 12.8a1 1 0 000-1.6L6.6 7.2A1 1 0 005 8v8a1 1 0 001.6.8l5.333-4zM19.933 12.8a1 1 0 000-1.6l-5.333-4A1 1 0 0013 8v8a1 1 0 001.6.8l5.333-4z"/></svg>
+              </button>
+            </div>
+
+            <!-- Waveform visualization -->
+            <div class="audio-waveform justify-center mt-4">
+              <span style="animation-delay:0s;height:40%"></span>
+              <span style="animation-delay:0.1s;height:70%"></span>
+              <span style="animation-delay:0.2s;height:30%"></span>
+              <span style="animation-delay:0.3s;height:80%"></span>
+              <span style="animation-delay:0.15s;height:50%"></span>
+              <span style="animation-delay:0.25s;height:90%"></span>
+              <span style="animation-delay:0.35s;height:35%"></span>
+              <span style="animation-delay:0.05s;height:65%"></span>
+              <span style="animation-delay:0.4s;height:45%"></span>
+              <span style="animation-delay:0.12s;height:75%"></span>
+              <span style="animation-delay:0.22s;height:55%"></span>
+              <span style="animation-delay:0.32s;height:85%"></span>
+              <span style="animation-delay:0.08s;height:40%"></span>
+              <span style="animation-delay:0.18s;height:60%"></span>
+              <span style="animation-delay:0.28s;height:30%"></span>
+              <span style="animation-delay:0.38s;height:70%"></span>
+              <span style="animation-delay:0.02s;height:50%"></span>
+              <span style="animation-delay:0.16s;height:80%"></span>
+              <span style="animation-delay:0.26s;height:45%"></span>
+              <span style="animation-delay:0.36s;height:65%"></span>
+            </div>
+          </div>
+
+          <!-- Topics list -->
+          <div class="bg-white rounded-2xl p-5 border border-stone-900/5">
+            <div class="text-xs text-slate font-medium uppercase tracking-wider mb-3">Today's Topics</div>
+            <div class="space-y-2 text-sm">
+              <div class="flex items-center gap-2 text-stone-900"><span class="w-1.5 h-1.5 bg-copper rounded-full"></span> Kentucky Lake conditions &amp; water level update</div>
+              <div class="flex items-center gap-2 text-stone-900"><span class="w-1.5 h-1.5 bg-sage rounded-full"></span> Pre-spawn bite forecast for the weekend</div>
+              <div class="flex items-center gap-2 text-stone-900"><span class="w-1.5 h-1.5 bg-copper rounded-full"></span> What baits are producing this week</div>
+              <div class="flex items-center gap-2 text-stone-900"><span class="w-1.5 h-1.5 bg-sage rounded-full"></span> Crappie Masters tournament recap</div>
+              <div class="flex items-center gap-2 text-stone-900"><span class="w-1.5 h-1.5 bg-copper rounded-full"></span> Spring staging tips &mdash; depth and structure</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================== SMART FISHING JOURNAL ============================== -->
+  <section id="smart-journal" class="py-24 md:py-32 bg-white">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center fade-up">
+        <!-- Journal mockup -->
+        <div class="space-y-4">
+          <div class="bg-stone-100 rounded-2xl p-6 border border-stone-900/5">
+            <div class="text-xs text-copper font-medium uppercase tracking-wider mb-4">New Catch Entry</div>
+
+            <!-- Auto-populated fields -->
+            <div class="space-y-3 mb-5">
+              <div class="flex items-center justify-between py-2 border-b border-stone-900/5">
+                <span class="text-sm text-slate">Location</span>
+                <span class="text-sm font-medium text-stone-900 flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5 text-sage" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                  Kentucky Lake &mdash; Big Sandy
+                </span>
+              </div>
+              <div class="flex items-center justify-between py-2 border-b border-stone-900/5">
+                <span class="text-sm text-slate">Water Temp</span>
+                <span class="text-sm font-medium text-stone-900 flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5 text-sage" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                  62&deg;F
+                </span>
+              </div>
+              <div class="flex items-center justify-between py-2 border-b border-stone-900/5">
+                <span class="text-sm text-slate">Weather</span>
+                <span class="text-sm font-medium text-stone-900 flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5 text-sage" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                  Partly Cloudy, 58&deg;F, 8 mph SSW
+                </span>
+              </div>
+              <div class="flex items-center justify-between py-2 border-b border-stone-900/5">
+                <span class="text-sm text-slate">Moon Phase</span>
+                <span class="text-sm font-medium text-stone-900 flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5 text-sage" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                  Waxing Gibbous 78%
+                </span>
+              </div>
+              <div class="flex items-center justify-between py-2 border-b border-stone-900/5">
+                <span class="text-sm text-slate">Barometric</span>
+                <span class="text-sm font-medium text-stone-900 flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5 text-sage" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                  30.12 in &uarr; Rising
+                </span>
+              </div>
+              <div class="flex items-center justify-between py-2 border-b border-stone-900/5">
+                <span class="text-sm text-slate">Time</span>
+                <span class="text-sm font-medium text-stone-900 flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5 text-sage" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                  7:24 AM
+                </span>
+              </div>
+            </div>
+
+            <div class="bg-sage/10 rounded-xl px-4 py-2.5 text-xs text-sage font-medium mb-5 flex items-center gap-2">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              6 fields auto-populated from GPS &amp; sensors
+            </div>
+
+            <!-- Manual fields -->
+            <div class="space-y-3">
+              <div class="flex items-center justify-between py-2 border-b border-copper/20">
+                <span class="text-sm text-copper font-medium">Species</span>
+                <span class="text-sm text-slate italic">White Crappie</span>
+              </div>
+              <div class="flex items-center justify-between py-2 border-b border-copper/20">
+                <span class="text-sm text-copper font-medium">Size</span>
+                <span class="text-sm text-slate italic">14.5 in / 1.8 lb</span>
+              </div>
+              <div class="flex items-center justify-between py-2 border-b border-copper/20">
+                <span class="text-sm text-copper font-medium">Bait Used</span>
+                <span class="text-sm text-slate italic">Chartreuse tube jig, 1/16 oz</span>
+              </div>
+            </div>
+          </div>
+          <img src="assets/images/photos/crappie-catch-closeup.png" alt="Fisherman holding a beautiful white crappie in golden morning light" class="w-full h-48 object-cover rounded-2xl shadow-lg" loading="lazy">
+        </div>
+
+        <div>
+          <p class="text-copper font-medium text-sm tracking-widest uppercase mb-4">Smart Fishing Journal</p>
+          <h2 class="font-serif text-3xl md:text-4xl font-bold text-stone-900 mb-4">Your Catches. Your Patterns. Logged in Seconds.</h2>
+          <p class="text-slate text-base leading-relaxed mb-6">
+            Most fishing logs ask you to type everything. SlabHaul pre-populates what it already knows &mdash; GPS location, lake name, weather, barometric pressure, water temp, moon phase, and time. You just fill in the fish.
+          </p>
+          <p class="text-slate text-base leading-relaxed mb-8">
+            Over time, your journal builds a personal fishing history that reveals patterns you'd never see otherwise. Which moon phase produces your best days? What bait works best when the barometer is falling? Your data, your edge.
+          </p>
+          <ul class="space-y-3">
+            <li class="flex items-start gap-3 text-sm text-stone-900">
+              <svg class="w-4 h-4 text-sage flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Auto-populates location, weather, moon, pressure, temp, time
+            </li>
+            <li class="flex items-start gap-3 text-sm text-stone-900">
+              <svg class="w-4 h-4 text-sage flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              You only add: species, size, bait, and optional photo
+            </li>
+            <li class="flex items-start gap-3 text-sm text-stone-900">
+              <svg class="w-4 h-4 text-sage flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Pattern analysis reveals your best conditions
+            </li>
+            <li class="flex items-start gap-3 text-sm text-stone-900">
+              <svg class="w-4 h-4 text-sage flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Log a catch in under 10 seconds on the water
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================== TOURNAMENT MODE ============================== -->
+  <section id="tournament-mode" class="py-24 md:py-32">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center fade-up">
+        <div>
+          <p class="text-copper font-medium text-sm tracking-widest uppercase mb-4">Tournament Mode</p>
+          <h2 class="font-serif text-3xl md:text-4xl font-bold text-stone-900 mb-4">From Registration to Weigh-In</h2>
+          <p class="text-copper font-serif text-lg italic mb-6">SlabHaul has you covered.</p>
+          <p class="text-slate text-base leading-relaxed mb-6">
+            Stay on top of upcoming crappie tournaments near your home lake. Registration deadlines, rules, entry fees, and schedules &mdash; all in one feed so you never miss an event.
+          </p>
+          <p class="text-slate text-base leading-relaxed mb-8">
+            When it's tournament day, flip on Tournament Mode. The app locks down spot sharing, enables structured catch logging for weigh-in records, and surfaces tournament-specific rules so you stay compliant and competitive.
+          </p>
+          <ul class="space-y-3">
+            <li class="flex items-start gap-3 text-sm text-stone-900">
+              <svg class="w-4 h-4 text-sage flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Upcoming tournament feed for your home lake
+            </li>
+            <li class="flex items-start gap-3 text-sm text-stone-900">
+              <svg class="w-4 h-4 text-sage flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              One-tap Tournament Mode toggle
+            </li>
+            <li class="flex items-start gap-3 text-sm text-stone-900">
+              <svg class="w-4 h-4 text-sage flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Restricts spot sharing during competition
+            </li>
+            <li class="flex items-start gap-3 text-sm text-stone-900">
+              <svg class="w-4 h-4 text-sage flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Catch logging for weigh-in records
+            </li>
+            <li class="flex items-start gap-3 text-sm text-stone-900">
+              <svg class="w-4 h-4 text-sage flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Tournament-specific rules at a glance
+            </li>
+          </ul>
+        </div>
+
+        <!-- Tournament mockup -->
+        <div class="space-y-4">
+          <!-- Tournament toggle -->
+          <div class="bg-white rounded-2xl p-6 border border-stone-900/5 shadow-lg">
+            <div class="flex items-center justify-between mb-5">
+              <div>
+                <div class="font-serif font-bold text-stone-900 text-lg">Tournament Mode</div>
+                <div class="text-slate text-xs">Restricts sharing &amp; enables competition logging</div>
+              </div>
+              <div class="w-14 h-7 bg-sage rounded-full relative cursor-pointer">
+                <div class="absolute top-0.5 right-0.5 w-6 h-6 bg-white rounded-full shadow-md"></div>
+              </div>
+            </div>
+            <div class="bg-sage/10 rounded-xl px-4 py-3 text-sm text-sage font-medium flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+              Tournament Mode Active &mdash; Spot sharing restricted
+            </div>
+          </div>
+
+          <!-- Upcoming tournaments -->
+          <div class="bg-white rounded-2xl p-6 border border-stone-900/5">
+            <div class="text-xs text-copper font-medium uppercase tracking-wider mb-4">Upcoming Tournaments</div>
+            <div class="space-y-4">
+              <div class="flex items-start gap-4 pb-4 border-b border-stone-900/5">
+                <div class="w-12 h-12 bg-copper/10 rounded-xl flex flex-col items-center justify-center flex-shrink-0">
+                  <span class="text-copper font-bold text-sm leading-none">APR</span>
+                  <span class="text-copper font-bold text-lg leading-none">5</span>
+                </div>
+                <div>
+                  <div class="font-serif font-bold text-stone-900 text-sm">Crappie Masters Classic</div>
+                  <div class="text-slate text-xs">Kentucky Lake &middot; $5,000 purse</div>
+                  <div class="text-copper text-xs font-medium mt-1">Registration closes Mar 31</div>
+                </div>
+              </div>
+              <div class="flex items-start gap-4 pb-4 border-b border-stone-900/5">
+                <div class="w-12 h-12 bg-copper/10 rounded-xl flex flex-col items-center justify-center flex-shrink-0">
+                  <span class="text-copper font-bold text-sm leading-none">APR</span>
+                  <span class="text-copper font-bold text-lg leading-none">12</span>
+                </div>
+                <div>
+                  <div class="font-serif font-bold text-stone-900 text-sm">Spring Slab Slam</div>
+                  <div class="text-slate text-xs">Reelfoot Lake &middot; $2,500 purse</div>
+                  <div class="text-sage text-xs font-medium mt-1">Registration open</div>
+                </div>
+              </div>
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 bg-copper/10 rounded-xl flex flex-col items-center justify-center flex-shrink-0">
+                  <span class="text-copper font-bold text-sm leading-none">APR</span>
+                  <span class="text-copper font-bold text-lg leading-none">19</span>
+                </div>
+                <div>
+                  <div class="font-serif font-bold text-stone-900 text-sm">Big Sandy Open</div>
+                  <div class="text-slate text-xs">Kentucky Lake &middot; $1,500 purse</div>
+                  <div class="text-sage text-xs font-medium mt-1">Registration open</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -605,7 +1084,7 @@
 
 
   <!-- ============================== HOW IT WORKS ============================== -->
-  <section id="how-it-works" class="py-24 md:py-32">
+  <section id="how-it-works" class="py-24 md:py-32 bg-white">
     <div class="max-w-6xl mx-auto px-6">
       <div class="text-center max-w-2xl mx-auto mb-16">
         <p class="fade-up text-copper font-medium text-sm tracking-widest uppercase mb-4">How It Works</p>
@@ -614,7 +1093,7 @@
         </h2>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 stagger">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 stagger mb-12">
         <div class="fade-up text-center">
           <div class="w-16 h-16 bg-copper/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
             <span class="font-serif text-2xl font-bold text-copper">1</span>
@@ -643,12 +1122,16 @@
           </p>
         </div>
       </div>
+
+      <div class="fade-up max-w-3xl mx-auto">
+        <img src="assets/images/photos/app-in-use-boat.png" alt="Fisherman using the SlabHaul app on his phone while on a crappie fishing boat at dawn" class="w-full h-64 md:h-80 object-cover rounded-2xl shadow-xl" loading="lazy">
+      </div>
     </div>
   </section>
 
 
   <!-- ============================== LAKES ============================== -->
-  <section id="lakes" class="py-24 md:py-32 bg-white">
+  <section id="lakes" class="py-24 md:py-32">
     <div class="max-w-6xl mx-auto px-6">
       <div class="text-center max-w-2xl mx-auto mb-16">
         <p class="fade-up text-copper font-medium text-sm tracking-widest uppercase mb-4">Lakes</p>
@@ -660,8 +1143,12 @@
         </p>
       </div>
 
+      <div class="fade-up mb-10">
+        <img src="assets/images/photos/kentucky-lake.png" alt="Panoramic view of Kentucky Lake at golden hour" class="w-full h-64 md:h-80 object-cover rounded-2xl shadow-xl" loading="lazy">
+      </div>
+
       <div class="grid grid-cols-1 md:grid-cols-3 gap-5 stagger mb-10">
-        <div class="fade-up card-hover bg-stone-100 rounded-2xl p-7 border border-stone-900/5">
+        <div class="fade-up card-hover bg-white rounded-2xl p-7 border border-stone-900/5">
           <h3 class="font-serif text-xl font-bold text-stone-900 mb-1">Kentucky Lake</h3>
           <p class="text-slate text-sm mb-4">Tennessee / Kentucky</p>
           <div class="flex gap-4 text-sm text-slate">
@@ -669,7 +1156,7 @@
             <span><strong class="text-copper">USGS</strong> gauged</span>
           </div>
         </div>
-        <div class="fade-up card-hover bg-stone-100 rounded-2xl p-7 border border-stone-900/5">
+        <div class="fade-up card-hover bg-white rounded-2xl p-7 border border-stone-900/5">
           <h3 class="font-serif text-xl font-bold text-stone-900 mb-1">Reelfoot Lake</h3>
           <p class="text-slate text-sm mb-4">Tennessee</p>
           <div class="flex gap-4 text-sm text-slate">
@@ -677,7 +1164,7 @@
             <span><strong class="text-copper">TWRA</strong> data</span>
           </div>
         </div>
-        <div class="fade-up card-hover bg-stone-100 rounded-2xl p-7 border border-stone-900/5">
+        <div class="fade-up card-hover bg-white rounded-2xl p-7 border border-stone-900/5">
           <h3 class="font-serif text-xl font-bold text-stone-900 mb-1">Horseshoe Lake</h3>
           <p class="text-slate text-sm mb-4">Arkansas</p>
           <div class="flex gap-4 text-sm text-slate">
@@ -692,7 +1179,7 @@
 
 
   <!-- ============================== CRAPPIE INTELLIGENCE ============================== -->
-  <section class="py-24 md:py-32">
+  <section class="py-24 md:py-32 bg-white">
     <div class="max-w-6xl mx-auto px-6">
       <div class="text-center max-w-2xl mx-auto mb-16">
         <p class="fade-up text-copper font-medium text-sm tracking-widest uppercase mb-4">Knowledge Base</p>
@@ -705,28 +1192,28 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-5 stagger">
-        <div class="fade-up card-hover bg-white rounded-2xl p-7 border border-stone-900/5 flex gap-5">
+        <div class="fade-up card-hover bg-stone-100 rounded-2xl p-7 border border-stone-900/5 flex gap-5">
           <div class="w-12 h-12 bg-copper/10 rounded-xl flex items-center justify-center flex-shrink-0 text-xl">&#127777;&#65039;</div>
           <div>
             <h3 class="font-serif text-lg font-bold text-stone-900 mb-2">Seasonal Patterns</h3>
             <p class="text-slate text-sm leading-relaxed">Pre-spawn, spawn, post-spawn, summer, and winter patterns with depth ranges, structure types, and behavior insights.</p>
           </div>
         </div>
-        <div class="fade-up card-hover bg-white rounded-2xl p-7 border border-stone-900/5 flex gap-5">
+        <div class="fade-up card-hover bg-stone-100 rounded-2xl p-7 border border-stone-900/5 flex gap-5">
           <div class="w-12 h-12 bg-sage/15 rounded-xl flex items-center justify-center flex-shrink-0 text-xl">&#127907;</div>
           <div>
             <h3 class="font-serif text-lg font-bold text-stone-900 mb-2">Techniques Guide</h3>
             <p class="text-slate text-sm leading-relaxed">Spider rigging, vertical jigging, long-lining, shooting docks, and more &mdash; with pros, cons, and best conditions for each.</p>
           </div>
         </div>
-        <div class="fade-up card-hover bg-white rounded-2xl p-7 border border-stone-900/5 flex gap-5">
+        <div class="fade-up card-hover bg-stone-100 rounded-2xl p-7 border border-stone-900/5 flex gap-5">
           <div class="w-12 h-12 bg-copper/10 rounded-xl flex items-center justify-center flex-shrink-0 text-xl">&#129416;</div>
           <div>
             <h3 class="font-serif text-lg font-bold text-stone-900 mb-2">Bait Library</h3>
             <p class="text-slate text-sm leading-relaxed">Jigs, live bait, crankbaits, and soft plastics &mdash; complete with rigging methods, color selection, and seasonal usage.</p>
           </div>
         </div>
-        <div class="fade-up card-hover bg-white rounded-2xl p-7 border border-stone-900/5 flex gap-5">
+        <div class="fade-up card-hover bg-stone-100 rounded-2xl p-7 border border-stone-900/5 flex gap-5">
           <div class="w-12 h-12 bg-sage/15 rounded-xl flex items-center justify-center flex-shrink-0 text-xl">&#128200;</div>
           <div>
             <h3 class="font-serif text-lg font-bold text-stone-900 mb-2">Condition Analysis</h3>
@@ -739,7 +1226,7 @@
 
 
   <!-- ============================== TESTIMONIALS ============================== -->
-  <section class="py-24 md:py-32 bg-white">
+  <section class="py-24 md:py-32">
     <div class="max-w-6xl mx-auto px-6">
       <div class="text-center max-w-2xl mx-auto mb-16">
         <p class="fade-up text-copper font-medium text-sm tracking-widest uppercase mb-4">From the Water</p>
@@ -749,7 +1236,7 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 stagger">
-        <div class="fade-up bg-stone-100 rounded-2xl p-8 border border-stone-900/5 relative">
+        <div class="fade-up bg-white rounded-2xl p-8 border border-stone-900/5 relative">
           <div class="font-serif text-5xl text-copper/20 absolute top-4 left-6 leading-none">&ldquo;</div>
           <blockquote class="text-stone-900 text-sm leading-relaxed mb-6 pt-6">
             Finally, an app that speaks crappie. Not bass, not walleye &mdash; crappie. The thermocline feature alone is worth it.
@@ -763,7 +1250,7 @@
           </div>
         </div>
 
-        <div class="fade-up bg-stone-100 rounded-2xl p-8 border border-stone-900/5 relative">
+        <div class="fade-up bg-white rounded-2xl p-8 border border-stone-900/5 relative">
           <div class="font-serif text-5xl text-copper/20 absolute top-4 left-6 leading-none">&ldquo;</div>
           <blockquote class="text-stone-900 text-sm leading-relaxed mb-6 pt-6">
             The attractor map is a game-changer. Found brush piles I've been driving over for years. Put us on a limit by 9 AM.
@@ -777,7 +1264,7 @@
           </div>
         </div>
 
-        <div class="fade-up bg-stone-100 rounded-2xl p-8 border border-stone-900/5 relative">
+        <div class="fade-up bg-white rounded-2xl p-8 border border-stone-900/5 relative">
           <div class="font-serif text-5xl text-copper/20 absolute top-4 left-6 leading-none">&ldquo;</div>
           <blockquote class="text-stone-900 text-sm leading-relaxed mb-6 pt-6">
             The spider rig calculator is something I didn't know I needed. Dialed in the right depth on my first drop. This app gets crappie fishing.
@@ -796,7 +1283,7 @@
 
 
   <!-- ============================== MULTI-PLATFORM ============================== -->
-  <section class="py-24 md:py-32">
+  <section class="py-24 md:py-32 bg-white">
     <div class="max-w-6xl mx-auto px-6">
       <div class="text-center max-w-2xl mx-auto mb-16">
         <p class="fade-up text-copper font-medium text-sm tracking-widest uppercase mb-4">Multi-Platform</p>
@@ -809,17 +1296,17 @@
       </div>
 
       <div class="fade-up flex flex-wrap justify-center gap-6">
-        <a href="https://apps.apple.com/app/slabhaul-crappie-companion/id6759182169" class="card-hover inline-flex flex-col items-center gap-3 bg-white rounded-2xl px-10 py-8 border border-stone-900/5">
+        <a href="https://apps.apple.com/app/slabhaul-crappie-companion/id6759182169" class="card-hover inline-flex flex-col items-center gap-3 bg-stone-100 rounded-2xl px-10 py-8 border border-stone-900/5">
           <svg class="w-10 h-10 text-stone-900" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
           <span class="font-serif font-bold text-stone-900">iOS</span>
           <span class="text-xs text-slate">App Store</span>
         </a>
-        <a href="https://play.google.com/store/apps/details?id=com.slabhaulapp.slabhaul" class="card-hover inline-flex flex-col items-center gap-3 bg-white rounded-2xl px-10 py-8 border border-stone-900/5">
+        <a href="https://play.google.com/store/apps/details?id=com.slabhaulapp.slabhaul" class="card-hover inline-flex flex-col items-center gap-3 bg-stone-100 rounded-2xl px-10 py-8 border border-stone-900/5">
           <svg class="w-10 h-10 text-stone-900" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.49c-.35-.55-.18-1.44-.18-1.44L13.83 12 3 1.95S2.83 1.06 3.18.51c.35-.55 1.01-.5 1.01-.5l13.39 7.72L13.83 12l3.75 4.27L4.19 23.99s-.66.05-1.01-.5zM20.16 10.51L17 8.7l-3.17 3.3 3.17 3.3 3.16-1.81c1.12-.65 1.12-1.69 0-2.98z"/></svg>
           <span class="font-serif font-bold text-stone-900">Android</span>
           <span class="text-xs text-slate">Google Play</span>
         </a>
-        <a href="https://slabhaulapp.com" class="card-hover inline-flex flex-col items-center gap-3 bg-white rounded-2xl px-10 py-8 border border-stone-900/5">
+        <a href="https://slabhaulapp.com" class="card-hover inline-flex flex-col items-center gap-3 bg-stone-100 rounded-2xl px-10 py-8 border border-stone-900/5">
           <svg class="w-10 h-10 text-stone-900" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
           <span class="font-serif font-bold text-stone-900">Web</span>
           <span class="text-xs text-slate">slabhaulapp.com</span>
@@ -830,9 +1317,9 @@
 
 
   <!-- ============================== PRICING ============================== -->
-  <section id="pricing" class="py-24 md:py-32 bg-white">
+  <section id="pricing" class="py-24 md:py-32">
     <div class="max-w-6xl mx-auto px-6">
-      <div class="text-center max-w-2xl mx-auto mb-16">
+      <div class="text-center max-w-2xl mx-auto mb-10">
         <p class="fade-up text-copper font-medium text-sm tracking-widest uppercase mb-4">Pricing</p>
         <h2 class="fade-up font-serif text-4xl md:text-5xl font-bold text-stone-900 mb-6">
           Choose Your Plan
@@ -840,9 +1327,17 @@
         <p class="fade-up text-slate text-lg">Start free during beta. Upgrade when you're ready for the full experience.</p>
       </div>
 
+      <!-- Monthly / Annual Toggle -->
+      <div class="fade-up flex items-center justify-center gap-4 mb-12">
+        <span class="text-sm font-medium" :class="annual ? 'text-slate' : 'text-stone-900'">Monthly</span>
+        <button @click="annual = !annual" class="pricing-toggle" :class="{ 'active': annual }" role="switch" :aria-checked="annual.toString()" aria-label="Toggle annual pricing"></button>
+        <span class="text-sm font-medium" :class="annual ? 'text-stone-900' : 'text-slate'">Annual</span>
+        <span x-show="annual" x-transition class="bg-sage/15 text-sage text-xs font-bold px-2.5 py-1 rounded-full">Save up to 29%</span>
+      </div>
+
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto stagger">
         <!-- Free -->
-        <div class="fade-up card-hover bg-stone-100 rounded-2xl p-8 border border-stone-900/5 text-center">
+        <div class="fade-up card-hover bg-white rounded-2xl p-8 border border-stone-900/5 text-center">
           <h3 class="font-serif text-xl font-bold text-stone-900 mb-2">Free (Beta)</h3>
           <div class="mb-2">
             <span class="font-serif text-5xl font-bold text-stone-900">$0</span>
@@ -877,22 +1372,38 @@
           <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-copper text-white text-xs font-bold px-4 py-1 rounded-full uppercase tracking-wide">Most Popular</div>
           <h3 class="font-serif text-xl font-bold mb-2">Pro</h3>
           <div class="mb-2">
-            <span class="font-serif text-5xl font-bold">$6<span class="text-2xl">.99</span></span>
-            <span class="text-stone-50/60 text-sm">/mo</span>
+            <template x-if="!annual">
+              <div>
+                <span class="font-serif text-5xl font-bold">$6<span class="text-2xl">.99</span></span>
+                <span class="text-stone-50/60 text-sm">/mo</span>
+              </div>
+            </template>
+            <template x-if="annual">
+              <div>
+                <span class="font-serif text-5xl font-bold">$4<span class="text-2xl">.99</span></span>
+                <span class="text-stone-50/60 text-sm">/mo</span>
+                <div class="text-stone-50/50 text-xs mt-1">$59.99/yr &middot; billed annually</div>
+                <div class="inline-block bg-sage/20 text-sage-light text-xs font-bold px-2.5 py-0.5 rounded-full mt-2">SAVE 29%</div>
+              </div>
+            </template>
           </div>
           <p class="text-stone-50/60 text-sm mb-6">Everything in Free + premium features.</p>
           <ul class="text-left space-y-3 mb-8">
             <li class="flex items-center gap-3 text-sm">
               <svg class="w-4 h-4 text-copper flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-              Premium attractor data
+              Ask Uncle Slab &mdash; AI fishing assistant
+            </li>
+            <li class="flex items-center gap-3 text-sm">
+              <svg class="w-4 h-4 text-copper flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Morning Crappie Report (audio + text)
+            </li>
+            <li class="flex items-center gap-3 text-sm">
+              <svg class="w-4 h-4 text-copper flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Smart Fishing Journal
             </li>
             <li class="flex items-center gap-3 text-sm">
               <svg class="w-4 h-4 text-copper flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
               Advanced thermocline models
-            </li>
-            <li class="flex items-center gap-3 text-sm">
-              <svg class="w-4 h-4 text-copper flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-              Priority lake requests
             </li>
             <li class="flex items-center gap-3 text-sm">
               <svg class="w-4 h-4 text-copper flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
@@ -905,11 +1416,23 @@
         </div>
 
         <!-- Guide -->
-        <div class="fade-up card-hover bg-stone-100 rounded-2xl p-8 border border-stone-900/5 text-center">
+        <div class="fade-up card-hover bg-white rounded-2xl p-8 border border-stone-900/5 text-center">
           <h3 class="font-serif text-xl font-bold text-stone-900 mb-2">Guide</h3>
           <div class="mb-2">
-            <span class="font-serif text-5xl font-bold text-stone-900">$69</span>
-            <span class="text-slate text-sm">/mo</span>
+            <template x-if="!annual">
+              <div>
+                <span class="font-serif text-5xl font-bold text-stone-900">$69</span>
+                <span class="text-slate text-sm">/mo</span>
+              </div>
+            </template>
+            <template x-if="annual">
+              <div>
+                <span class="font-serif text-5xl font-bold text-stone-900">$49<span class="text-2xl">.92</span></span>
+                <span class="text-slate text-sm">/mo</span>
+                <div class="text-slate text-xs mt-1">$599/yr &middot; billed annually</div>
+                <div class="inline-block bg-sage/15 text-sage text-xs font-bold px-2.5 py-0.5 rounded-full mt-2">SAVE 28%</div>
+              </div>
+            </template>
           </div>
           <p class="text-slate text-sm mb-6">Everything in Pro + commercial features.</p>
           <ul class="text-left space-y-3 mb-8">
@@ -920,6 +1443,10 @@
             <li class="flex items-center gap-3 text-sm text-stone-900">
               <svg class="w-4 h-4 text-sage flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
               Client trip planning
+            </li>
+            <li class="flex items-center gap-3 text-sm text-stone-900">
+              <svg class="w-4 h-4 text-sage flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Tournament Mode
             </li>
             <li class="flex items-center gap-3 text-sm text-stone-900">
               <svg class="w-4 h-4 text-sage flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
@@ -940,7 +1467,7 @@
 
 
   <!-- ============================== FAQ ============================== -->
-  <section id="faq" class="py-24 md:py-32">
+  <section id="faq" class="py-24 md:py-32 bg-white">
     <div class="max-w-6xl mx-auto px-6">
       <div class="text-center max-w-2xl mx-auto mb-16">
         <p class="fade-up text-copper font-medium text-sm tracking-widest uppercase mb-4">FAQ</p>
@@ -951,7 +1478,7 @@
 
       <div class="max-w-3xl mx-auto space-y-3">
         <!-- FAQ 1 -->
-        <div class="fade-up bg-white rounded-2xl border border-stone-900/5 overflow-hidden">
+        <div class="fade-up bg-stone-100 rounded-2xl border border-stone-900/5 overflow-hidden">
           <button @click="faqOpen === 1 ? faqOpen = null : faqOpen = 1" class="w-full flex items-center justify-between px-7 py-5 text-left">
             <span class="font-serif font-bold text-stone-900">What makes SlabHaul different from other fishing apps?</span>
             <svg :class="{ 'rotate-180': faqOpen === 1 }" class="w-4 h-4 text-slate flex-shrink-0 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
@@ -962,7 +1489,7 @@
         </div>
 
         <!-- FAQ 2 -->
-        <div class="fade-up bg-white rounded-2xl border border-stone-900/5 overflow-hidden">
+        <div class="fade-up bg-stone-100 rounded-2xl border border-stone-900/5 overflow-hidden">
           <button @click="faqOpen === 2 ? faqOpen = null : faqOpen = 2" class="w-full flex items-center justify-between px-7 py-5 text-left">
             <span class="font-serif font-bold text-stone-900">Where does the attractor location data come from?</span>
             <svg :class="{ 'rotate-180': faqOpen === 2 }" class="w-4 h-4 text-slate flex-shrink-0 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
@@ -973,7 +1500,7 @@
         </div>
 
         <!-- FAQ 3 -->
-        <div class="fade-up bg-white rounded-2xl border border-stone-900/5 overflow-hidden">
+        <div class="fade-up bg-stone-100 rounded-2xl border border-stone-900/5 overflow-hidden">
           <button @click="faqOpen === 3 ? faqOpen = null : faqOpen = 3" class="w-full flex items-center justify-between px-7 py-5 text-left">
             <span class="font-serif font-bold text-stone-900">What lakes are currently supported?</span>
             <svg :class="{ 'rotate-180': faqOpen === 3 }" class="w-4 h-4 text-slate flex-shrink-0 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
@@ -984,34 +1511,45 @@
         </div>
 
         <!-- FAQ 4 -->
-        <div class="fade-up bg-white rounded-2xl border border-stone-900/5 overflow-hidden">
+        <div class="fade-up bg-stone-100 rounded-2xl border border-stone-900/5 overflow-hidden">
           <button @click="faqOpen === 4 ? faqOpen = null : faqOpen = 4" class="w-full flex items-center justify-between px-7 py-5 text-left">
-            <span class="font-serif font-bold text-stone-900">Is SlabHaul available on Android?</span>
+            <span class="font-serif font-bold text-stone-900">Who is Uncle Slab?</span>
             <svg :class="{ 'rotate-180': faqOpen === 4 }" class="w-4 h-4 text-slate flex-shrink-0 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
           <div x-show="faqOpen === 4" x-collapse>
-            <p class="px-7 pb-6 text-slate text-sm leading-relaxed">SlabHaul is available on iOS, Android, and the web. Download from the App Store, Google Play, or use the web app at slabhaulapp.com.</p>
+            <p class="px-7 pb-6 text-slate text-sm leading-relaxed">Uncle Slab is our AI fishing assistant &mdash; built on a growing database of crappie fishing knowledge that's updated nightly. Think of him as the uncle who always knows more about crappie than everybody else at the ramp. Ask him about baits, techniques, conditions, or specific lakes and he'll give you a straight answer. He also voices the Morning Crappie Report.</p>
           </div>
         </div>
 
         <!-- FAQ 5 -->
-        <div class="fade-up bg-white rounded-2xl border border-stone-900/5 overflow-hidden">
+        <div class="fade-up bg-stone-100 rounded-2xl border border-stone-900/5 overflow-hidden">
           <button @click="faqOpen === 5 ? faqOpen = null : faqOpen = 5" class="w-full flex items-center justify-between px-7 py-5 text-left">
-            <span class="font-serif font-bold text-stone-900">Does the app work offline?</span>
+            <span class="font-serif font-bold text-stone-900">Is SlabHaul available on Android?</span>
             <svg :class="{ 'rotate-180': faqOpen === 5 }" class="w-4 h-4 text-slate flex-shrink-0 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
           <div x-show="faqOpen === 5" x-collapse>
-            <p class="px-7 pb-6 text-slate text-sm leading-relaxed">Yes. Attractor locations, the knowledge base, and the spider rig calculator all work offline. Weather and water level data requires a connection to fetch the latest readings, but previously loaded data is cached on your device.</p>
+            <p class="px-7 pb-6 text-slate text-sm leading-relaxed">SlabHaul is available on iOS, Android, and the web. Download from the App Store, Google Play, or use the web app at slabhaulapp.com.</p>
           </div>
         </div>
 
         <!-- FAQ 6 -->
-        <div class="fade-up bg-white rounded-2xl border border-stone-900/5 overflow-hidden">
+        <div class="fade-up bg-stone-100 rounded-2xl border border-stone-900/5 overflow-hidden">
           <button @click="faqOpen === 6 ? faqOpen = null : faqOpen = 6" class="w-full flex items-center justify-between px-7 py-5 text-left">
-            <span class="font-serif font-bold text-stone-900">Is it free during beta?</span>
+            <span class="font-serif font-bold text-stone-900">Does the app work offline?</span>
             <svg :class="{ 'rotate-180': faqOpen === 6 }" class="w-4 h-4 text-slate flex-shrink-0 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
           <div x-show="faqOpen === 6" x-collapse>
+            <p class="px-7 pb-6 text-slate text-sm leading-relaxed">Yes. Attractor locations, the knowledge base, and the spider rig calculator all work offline. Weather and water level data requires a connection to fetch the latest readings, but previously loaded data is cached on your device.</p>
+          </div>
+        </div>
+
+        <!-- FAQ 7 -->
+        <div class="fade-up bg-stone-100 rounded-2xl border border-stone-900/5 overflow-hidden">
+          <button @click="faqOpen === 7 ? faqOpen = null : faqOpen = 7" class="w-full flex items-center justify-between px-7 py-5 text-left">
+            <span class="font-serif font-bold text-stone-900">Is it free during beta?</span>
+            <svg :class="{ 'rotate-180': faqOpen === 7 }" class="w-4 h-4 text-slate flex-shrink-0 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div x-show="faqOpen === 7" x-collapse>
             <p class="px-7 pb-6 text-slate text-sm leading-relaxed">Yes. All beta testers get full access to every feature at no cost. Once we officially launch, you'll be able to choose the plan that fits your needs. Early supporters will receive special pricing as a thank you.</p>
           </div>
         </div>
@@ -1021,8 +1559,9 @@
 
 
   <!-- ============================== FINAL CTA ============================== -->
-  <section class="py-24 md:py-32 bg-stone-900 relative overflow-hidden">
-    <div class="absolute inset-0 photo-placeholder opacity-10" role="img" aria-label="Aerial view of a lake at dawn with fishing boats creating wake patterns on glassy water"></div>
+  <section class="py-24 md:py-32 relative overflow-hidden">
+    <img src="assets/images/photos/hero-lake-dawn.png" alt="Tennessee lake at dawn" class="absolute inset-0 w-full h-full object-cover">
+    <div class="absolute inset-0 bg-stone-900/80"></div>
     <div class="relative max-w-3xl mx-auto px-6 text-center">
       <h2 class="fade-up font-serif text-4xl md:text-5xl font-bold text-stone-50 mb-6">
         Ready to Haul More Slabs?
@@ -1061,6 +1600,7 @@
         <div>
           <h4 class="text-xs uppercase tracking-widest text-stone-50/40 font-semibold mb-4">Product</h4>
           <a href="#features" class="block text-sm text-stone-50/60 hover:text-stone-50 transition-colors py-1">Features</a>
+          <a href="#uncle-slab" class="block text-sm text-stone-50/60 hover:text-stone-50 transition-colors py-1">Ask Uncle Slab</a>
           <a href="#lakes" class="block text-sm text-stone-50/60 hover:text-stone-50 transition-colors py-1">Lakes</a>
           <a href="#pricing" class="block text-sm text-stone-50/60 hover:text-stone-50 transition-colors py-1">Pricing</a>
           <a href="#faq" class="block text-sm text-stone-50/60 hover:text-stone-50 transition-colors py-1">FAQ</a>
