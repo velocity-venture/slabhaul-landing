@@ -6,3 +6,4 @@ config.js
 
 # Build artifacts
 data/
+.doppler.yaml
