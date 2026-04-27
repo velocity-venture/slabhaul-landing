@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.slabhaulapp.slabhaul",
+      "sha256_cert_fingerprints": [
+        "AA:74:3C:B3:A7:25:83:69:06:78:42:16:92:27:5C:08:2A:01:2A:9C:06:18:01:C5:D6:40:42:C7:5A:13:AA:34"
+      ]
+    }
+  }
+]
