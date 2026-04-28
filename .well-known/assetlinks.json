@@ -7,6 +7,8 @@
       "namespace": "android_app",
       "package_name": "com.slabhaulapp.slabhaul",
       "sha256_cert_fingerprints": [
+        "28:89:6E:29:99:61:E4:A1:9D:FB:A4:5D:D7:8B:2F:5D:6A:0F:FB:53:F0:5F:68:24:14:25:A4:4E:4D:3D:3D:D3",
+        "82:DB:C3:54:63:FA:45:F3:7B:86:B7:76:09:EB:FE:FF:B0:A0:EC:50:C1:23:A2:6B:1B:57:0F:B9:6A:38:AC:D2",
         "AA:74:3C:B3:A7:25:83:69:06:78:42:16:92:27:5C:08:2A:01:2A:9C:06:18:01:C5:D6:40:42:C7:5A:13:AA:34"
       ]
     }
