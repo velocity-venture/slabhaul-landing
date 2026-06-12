@@ -1,3 +1,2 @@
 # Cloudflare Pages redirects
-/delete-account /delete-account.html 200
 https://www.slabhaul.ai/* https://slabhaul.ai/:splat 301
