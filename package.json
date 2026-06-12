@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "build": "tailwindcss -i ./src/styles.css -o ./assets/css/styles.css --minify",
+    "check": "npm run build"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
+  }
+}
