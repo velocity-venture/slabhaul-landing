@@ -1,6 +1,6 @@
-config.js
 .DS_Store
 node_modules/
+config.js
 
 # Cloudflare Wrangler
 .wrangler/
