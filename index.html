@@ -56,11 +56,45 @@
   <script src="/config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script>
-    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: {
-        flowType: 'pkce',
-      },
-    });
+    (function initSlabHaulAuth() {
+      const publicConfig = window.SLABHAUL_PUBLIC_CONFIG || {
+        SUPABASE_URL: window.SUPABASE_URL,
+        SUPABASE_ANON_KEY: window.SUPABASE_ANON_KEY,
+      };
+
+      if (!window.SLABHAUL_PUBLIC_CONFIG) {
+        window.SLABHAUL_PUBLIC_CONFIG = Object.freeze({
+          SUPABASE_URL: publicConfig.SUPABASE_URL,
+          SUPABASE_ANON_KEY: publicConfig.SUPABASE_ANON_KEY,
+        });
+      }
+
+      window.SLABHAUL_AUTH_INIT_ERROR = null;
+
+      if (window._supabase) {
+        return;
+      }
+
+      if (!publicConfig.SUPABASE_URL || !publicConfig.SUPABASE_ANON_KEY) {
+        window.SLABHAUL_AUTH_INIT_ERROR = 'Missing public Supabase configuration.';
+        return;
+      }
+
+      if (!window.supabase || typeof window.supabase.createClient !== 'function') {
+        window.SLABHAUL_AUTH_INIT_ERROR = 'Supabase browser SDK failed to load.';
+        return;
+      }
+
+      window._supabase = window.supabase.createClient(
+        publicConfig.SUPABASE_URL,
+        publicConfig.SUPABASE_ANON_KEY,
+        {
+          auth: {
+            flowType: 'pkce',
+          },
+        },
+      );
+    })();
   </script>
 
   <!-- Fonts -->
@@ -1026,7 +1060,7 @@
             <span class="font-serif font-bold text-stone-900">What makes SlabHaul different from other fishing apps?</span>
             <svg :class="{ 'rotate-180': faqOpen === 1 }" class="w-4 h-4 text-slate flex-shrink-0 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
-          <div x-show="faqOpen === 1" x-collapse>
+          <div x-show="faqOpen === 1">
             <p class="px-7 pb-6 text-slate text-sm leading-relaxed">SlabHaul is the only fishing app built 100% for crappie. Every feature, from the attractor map to the thermocline predictor to the spider rig calculator, is designed specifically for how crappie fishermen think and fish. We don't try to be everything for everyone.</p>
           </div>
         </div>
@@ -1037,7 +1071,7 @@
             <span class="font-serif font-bold text-stone-900">Where does the attractor location data come from?</span>
             <svg :class="{ 'rotate-180': faqOpen === 2 }" class="w-4 h-4 text-slate flex-shrink-0 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
-          <div x-show="faqOpen === 2" x-collapse>
+          <div x-show="faqOpen === 2">
             <p class="px-7 pb-6 text-slate text-sm leading-relaxed">Our attractor data is sourced from state wildlife agencies including TWRA, AGFC, and KDFWR. These are official brush pile, stake bed, and PVC tree locations placed by fisheries management programs. We verify and format this data for easy navigation.</p>
           </div>
         </div>
@@ -1048,7 +1082,7 @@
             <span class="font-serif font-bold text-stone-900">What lakes are currently supported?</span>
             <svg :class="{ 'rotate-180': faqOpen === 3 }" class="w-4 h-4 text-slate flex-shrink-0 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
-          <div x-show="faqOpen === 3" x-collapse>
+          <div x-show="faqOpen === 3">
             <p class="px-7 pb-6 text-slate text-sm leading-relaxed">We currently have full attractor maps for Kentucky Lake (TN/KY), Reelfoot Lake (TN), and Horseshoe Lake (AR). Weather and water data is available for 85+ lakes. We're adding new lakes across the Southeast regularly.</p>
           </div>
         </div>
@@ -1059,7 +1093,7 @@
             <span class="font-serif font-bold text-stone-900">Who is Uncle Slab?</span>
             <svg :class="{ 'rotate-180': faqOpen === 4 }" class="w-4 h-4 text-slate flex-shrink-0 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
-          <div x-show="faqOpen === 4" x-collapse>
+          <div x-show="faqOpen === 4">
             <p class="px-7 pb-6 text-slate text-sm leading-relaxed">Uncle Slab is our AI fishing assistant. Think of him as the uncle who always knows more about crappie than everybody else at the ramp. Ask him about baits, techniques, conditions, or specific lakes and he'll give you a straight answer. Daily updates and voice narration are roadmap items.</p>
           </div>
         </div>
@@ -1070,7 +1104,7 @@
             <span class="font-serif font-bold text-stone-900">Is SlabHaul available on Android?</span>
             <svg :class="{ 'rotate-180': faqOpen === 5 }" class="w-4 h-4 text-slate flex-shrink-0 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
-          <div x-show="faqOpen === 5" x-collapse>
+          <div x-show="faqOpen === 5">
             <p class="px-7 pb-6 text-slate text-sm leading-relaxed">Android open beta is next. iOS is planned for TestFlight after Android is stable. The web app runs at slabhaulapp.com.</p>
           </div>
         </div>
@@ -1081,7 +1115,7 @@
             <span class="font-serif font-bold text-stone-900">Does the app work offline?</span>
             <svg :class="{ 'rotate-180': faqOpen === 6 }" class="w-4 h-4 text-slate flex-shrink-0 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
-          <div x-show="faqOpen === 6" x-collapse>
+          <div x-show="faqOpen === 6">
             <p class="px-7 pb-6 text-slate text-sm leading-relaxed">Yes. Attractor locations, the knowledge base, and the spider rig calculator all work offline. Weather and water level data requires a connection to fetch the latest readings, but previously loaded data is cached on your device.</p>
           </div>
         </div>
@@ -1092,7 +1126,7 @@
             <span class="font-serif font-bold text-stone-900">Is it free during beta?</span>
             <svg :class="{ 'rotate-180': faqOpen === 7 }" class="w-4 h-4 text-slate flex-shrink-0 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
-          <div x-show="faqOpen === 7" x-collapse>
+          <div x-show="faqOpen === 7">
             <p class="px-7 pb-6 text-slate text-sm leading-relaxed">Yes. All beta testers get full access at no cost. Free during beta. Founding Angler pricing coming soon.</p>
           </div>
         </div>
@@ -1240,28 +1274,66 @@
 
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-    // Login helpers for non-Alpine onclick handlers
-    function openLogin(e) {
+    function getLandingState() {
+      const root = document.querySelector('[x-data]');
+      if (!root) return null;
+      if (window.Alpine && typeof window.Alpine.$data === 'function') {
+        return window.Alpine.$data(root);
+      }
+      return null;
+    }
+
+    function setLoginOpen(open) {
+      const state = getLandingState();
+      if (state) {
+        state.loginOpen = open;
+        return;
+      }
+      const modal = document.getElementById('login-modal');
+      if (modal) {
+        modal.classList.toggle('open', open);
+      }
+    }
+
+    function showLoginError(message) {
+      const errorEl = document.getElementById('login-error');
+      if (!errorEl) return;
+      errorEl.textContent = message;
+      errorEl.classList.remove('hidden');
+    }
+
+    function getSupabaseClient() {
+      return window._supabase || null;
+    }
+
+    window.openLogin = function openLogin(e) {
       if (e) e.preventDefault();
-      document.querySelector('[x-data]').__x.$data.loginOpen = true;
-    }
+      setLoginOpen(true);
+    };
 
-    function closeLogin() {
-      document.querySelector('[x-data]').__x.$data.loginOpen = false;
-    }
+    window.closeLogin = function closeLogin() {
+      setLoginOpen(false);
+    };
 
-    // Handle login form
-    async function handleLogin(e) {
+    window.handleLogin = async function handleLogin(e) {
       e.preventDefault();
       const btn = document.getElementById('login-submit-btn');
       const errorEl = document.getElementById('login-error');
       const email = document.getElementById('login-email').value;
+      const client = getSupabaseClient();
 
       btn.disabled = true;
       btn.textContent = 'Sending link...';
       errorEl.classList.add('hidden');
 
-      const { error } = await _supabase.auth.signInWithOtp({
+      if (!client) {
+        btn.disabled = false;
+        btn.textContent = 'Send login link';
+        showLoginError(window.SLABHAUL_AUTH_INIT_ERROR || 'Login is temporarily unavailable. Please try again in a minute.');
+        return;
+      }
+
+      const { error } = await client.auth.signInWithOtp({
         email,
         options: {
           emailRedirectTo: 'https://slabhaulapp.com/auth/callback',
@@ -1279,28 +1351,36 @@
       btn.textContent = 'Check your inbox';
       errorEl.textContent = 'We sent a secure login link. Open it to continue to SlabHaul.';
       errorEl.classList.remove('hidden');
-    }
+    };
 
-    // Handle OAuth
-    async function handleOAuth(provider) {
-      const { error } = await _supabase.auth.signInWithOAuth({
+    window.handleOAuth = async function handleOAuth(provider) {
+      const client = getSupabaseClient();
+      if (!client) {
+        alert(window.SLABHAUL_AUTH_INIT_ERROR || 'Login is temporarily unavailable. Please try again in a minute.');
+        return;
+      }
+      const { error } = await client.auth.signInWithOAuth({
         provider: provider,
         options: { redirectTo: 'https://slabhaulapp.com/auth/callback' }
       });
       if (error) {
         alert('OAuth error: ' + error.message);
       }
-    }
+    };
 
-    // Handle forgot password
-    async function handleForgotPassword(e) {
+    window.handleForgotPassword = async function handleForgotPassword(e) {
       e.preventDefault();
+      const client = getSupabaseClient();
+      if (!client) {
+        alert(window.SLABHAUL_AUTH_INIT_ERROR || 'Login is temporarily unavailable. Please try again in a minute.');
+        return;
+      }
       const email = document.getElementById('login-email').value;
       if (!email) {
         alert('Please enter your email address first.');
         return;
       }
-      const { error } = await _supabase.auth.resetPasswordForEmail(email, {
+      const { error } = await client.auth.resetPasswordForEmail(email, {
         redirectTo: 'https://slabhaulapp.com/auth/callback?type=recovery'
       });
       if (error) {
@@ -1308,26 +1388,28 @@
       } else {
         alert('Password reset email sent! Check your inbox.');
       }
-    }
+    };
 
-    // Session check: swap "Log In" to "Go to App" if already authenticated
-    _supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        const loginBtn = document.getElementById('nav-login-btn');
-        if (loginBtn) {
-          loginBtn.textContent = 'Go to App';
-          loginBtn.onclick = function(e) {
-            e.preventDefault();
-            window.location.href = 'https://slabhaulapp.com/';
-          };
+    const sessionClient = getSupabaseClient();
+    if (sessionClient) {
+      sessionClient.auth.getSession().then(({ data: { session } }) => {
+        if (session) {
+          const loginBtn = document.getElementById('nav-login-btn');
+          if (loginBtn) {
+            loginBtn.textContent = 'Go to App';
+            loginBtn.onclick = function(e) {
+              e.preventDefault();
+              window.location.href = 'https://slabhaulapp.com/';
+            };
+          }
         }
-      }
-    });
+      }).catch(() => {});
+    }
 
     // Auto-open login modal when redirected with #login hash
     if (window.location.hash === '#login') {
       setTimeout(() => {
-        document.querySelector('[x-data]').__x.$data.loginOpen = true;
+        setLoginOpen(true);
       }, 100);
       history.replaceState(null, '', window.location.pathname);
     }
