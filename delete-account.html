@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Delete Account: SlabHaul</title>
-  <meta name="description" content="Request deletion of your SlabHaul account and personal data.">
+  <meta name="description" content="How to delete your SlabHaul account in the app or by email, and what is deleted.">
+  <link rel="canonical" href="https://slabhaul.ai/delete-account">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" href="/favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -31,11 +32,16 @@
     .back:hover { color: #e2e8f0; }
     .content { padding: 60px 0 80px; }
     .content h1 { font-size: 2rem; font-weight: 800; margin-bottom: 8px; }
+    .updated { color: #64748b; font-size: 0.85rem; margin-bottom: 40px; }
     .content h2 { font-size: 1.3rem; font-weight: 700; margin-top: 40px; margin-bottom: 12px; color: #00d4aa; }
     .content p, .content li { color: #94a3b8; font-size: 0.95rem; margin-bottom: 12px; }
-    .content ul { padding-left: 24px; margin-bottom: 16px; }
+    .content ul, .content ol { padding-left: 24px; margin-bottom: 16px; }
+    .content li { margin-bottom: 6px; }
     .content strong, .content a { color: #e2e8f0; }
     footer { padding: 40px 0; border-top: 1px solid rgba(255,255,255,0.08); text-align: center; color: #64748b; font-size: 0.8rem; }
+    footer nav a { color: #94a3b8; text-decoration: none; margin: 0 8px; }
+    footer nav a:hover { color: #e2e8f0; }
+    footer nav { margin-bottom: 12px; }
   </style>
 </head>
 <body>
@@ -45,28 +51,56 @@
       <a href="/" class="back">&larr; Back to home</a>
     </div>
   </header>
-  <div class="content">
+    <main class="content">
     <div class="container">
-      <h1>Delete Your Account</h1>
-      <p>We can delete your SlabHaul account and associated personal data by request.</p>
+      <h1>Delete Your SlabHaul Account</h1>
+      <p class="updated">Last updated: November 22, 2026</p>
 
-      <h2>How to request deletion</h2>
-      <p>Email <strong>support@slabhaul.ai</strong> from the email address tied to your SlabHaul account. Use the subject line <strong>Delete my SlabHaul account</strong>.</p>
+      <p>You can delete your SlabHaul account and the personal data tied to it at any time. You can do it in the app, or by email if you can no longer open the app.</p>
 
-      <h2>What gets deleted</h2>
+      <h2>Delete in the app</h2>
+      <ol>
+        <li>Open SlabHaul and sign in.</li>
+        <li>Go to <strong>Profile</strong>.</li>
+        <li>Tap <strong>Privacy</strong>.</li>
+        <li>Tap <strong>Delete account</strong> and confirm.</li>
+      </ol>
+
+      <h2>Delete by email</h2>
+      <p>If you can no longer open the app, email <a href="mailto:support@slabhaul.ai?subject=Delete%20my%20SlabHaul%20account">support@slabhaul.ai</a> with the subject line <strong>Delete my SlabHaul account</strong>.</p>
       <ul>
-        <li>Account profile and authentication records we control</li>
-        <li>Trip logs, catch records, and app-generated personal data</li>
-        <li>Subscription and billing records we are allowed to delete</li>
+        <li>Send it from the email address on your SlabHaul account, so we can confirm the account is yours.</li>
+        <li>If you no longer have that email, tell us the address you used and we will work with you to confirm it is your account.</li>
+      </ul>
+      <p>We will reply to confirm, and we finish deletion within 30 days.</p>
+
+      <h2>What is deleted</h2>
+      <ul>
+        <li>Your account and email address</li>
+        <li>Your bait reports, including their locations and notes</li>
+        <li>Your favorites, presets and tournament bookmarks</li>
+        <li>Your AI reports and AI usage counts</li>
+        <li>Any other personal data we store for your account</li>
       </ul>
 
-      <h2>Timing</h2>
-      <p>We process deletion requests within 30 days after verifying account ownership.</p>
+      <h2>What is not deleted</h2>
+      <ul>
+        <li><strong>Your subscription.</strong> Deleting your account does not cancel a subscription. Cancel it first in <a href="https://apps.apple.com/account/subscriptions">App Store subscriptions</a> or <a href="https://play.google.com/store/account/subscriptions">Google Play subscriptions</a>, or you may keep being charged.</li>
+        <li><strong>Data on your phone.</strong> Trips, your fishing profile and notes are stored on your device. Delete the app to remove them.</li>
+        <li><strong>Store records.</strong> Apple, Google and RevenueCat (which tracks subscriptions for us) keep their own purchase records under their own policies.</li>
+      </ul>
+
+      <h2>Guest mode</h2>
+      <p>If you used SlabHaul without an account, there is no account to delete. Your data is only on your phone. Deleting the app removes it.</p>
+
+      <h2>Questions</h2>
+      <p>Email <a href="mailto:support@slabhaul.ai">support@slabhaul.ai</a>. Our <a href="/privacy">Privacy Policy</a> has more about the data we collect.</p>
     </div>
-  </div>
+  </main>
   <footer>
     <div class="container">
-      <p>&copy; 2026 SlabHaul. A Velocity Venture Holdings product.</p>
+      <nav><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/support">Support</a><a href="/delete-account">Delete Account</a></nav>
+      <p>&copy; 2026 Velocity Venture Holdings, LLC</p>
     </div>
   </footer>
 </body>

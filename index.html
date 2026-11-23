@@ -41,14 +41,22 @@
     "url": "https://slabhaul.ai",
     "author": {
       "@type": "Organization",
-      "name": "Velocity Venture Holdings"
+      "name": "Velocity Venture Holdings, LLC"
     },
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD",
-      "description": "Free during beta"
-    }
+    "offers": [
+      {
+        "@type": "Offer",
+        "price": "8.99",
+        "priceCurrency": "USD",
+        "description": "Monthly subscription with a 7-day free trial. Auto-renews. Cancel anytime in the App Store or Google Play."
+      },
+      {
+        "@type": "Offer",
+        "price": "59.99",
+        "priceCurrency": "USD",
+        "description": "Yearly subscription with a 7-day free trial. Auto-renews. Cancel anytime in the App Store or Google Play."
+      }
+    ]
   }
   </script>
 
@@ -182,7 +190,7 @@
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
           </a>
         </div>
-        <p class="fade-up text-stone-50/60 text-sm">Free during beta &middot; No credit card required</p>
+        <p class="fade-up text-stone-50/60 text-sm">7-day free trial &middot; $8.99/month or $59.99/year &middot; Cancel anytime</p>
       </div>
     </div>
   </section>
@@ -1019,16 +1027,25 @@
       <div class="text-center max-w-2xl mx-auto mb-10">
         <p class="fade-up text-copper font-medium text-sm tracking-widest uppercase mb-4">Pricing</p>
         <h2 class="fade-up font-serif text-4xl md:text-5xl font-bold text-stone-900 mb-6">
-          Free During Beta
+          Simple Pricing
         </h2>
-        <p class="fade-up text-slate text-lg">All beta testers get full access at no cost while we prepare paid launch.</p>
+        <p class="fade-up text-slate text-lg">Start with a 7-day free trial. Pick monthly or yearly.</p>
       </div>
 
       <div class="max-w-2xl mx-auto">
         <div class="fade-up card-hover bg-white rounded-2xl p-8 border border-stone-900/5 text-center">
-          <h3 class="font-serif text-2xl font-bold text-stone-900 mb-4">Beta Access</h3>
-          <p class="text-slate text-base mb-4">Free during beta. Founding Angler pricing coming soon.</p>
-          <p class="text-slate text-sm mb-8">No credit card required. Paid launch is deferred until after open beta.</p>
+          <div class="grid sm:grid-cols-2 gap-6 mb-6">
+            <div>
+              <h3 class="font-serif text-2xl font-bold text-stone-900 mb-1">$8.99</h3>
+              <p class="text-slate text-sm">per month</p>
+            </div>
+            <div>
+              <h3 class="font-serif text-2xl font-bold text-stone-900 mb-1">$59.99</h3>
+              <p class="text-slate text-sm">per year</p>
+            </div>
+          </div>
+          <p class="text-slate text-base mb-4">Every plan starts with a 7-day free trial.</p>
+          <p class="text-slate text-sm mb-8">Subscriptions renew automatically until you cancel. Cancel anytime in the App Store or Google Play. See our <a href="/terms" class="text-copper hover:text-copper-dark">Terms of Service</a>.</p>
           <div class="flex flex-col sm:flex-row gap-3 justify-center">
             <a href="mailto:support@slabhaul.ai?subject=SlabHaul%20Android%20beta" class="inline-flex items-center justify-center bg-stone-900 text-stone-50 font-medium px-5 py-3 rounded-xl hover:bg-stone-800 transition-colors text-sm">
               Join Android beta
@@ -1123,11 +1140,11 @@
         <!-- FAQ 7 -->
         <div class="fade-up bg-stone-100 rounded-2xl border border-stone-900/5 overflow-hidden">
           <button @click="faqOpen === 7 ? faqOpen = null : faqOpen = 7" class="w-full flex items-center justify-between px-7 py-5 text-left">
-            <span class="font-serif font-bold text-stone-900">Is it free during beta?</span>
+            <span class="font-serif font-bold text-stone-900">How much does it cost?</span>
             <svg :class="{ 'rotate-180': faqOpen === 7 }" class="w-4 h-4 text-slate flex-shrink-0 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
           <div x-show="faqOpen === 7">
-            <p class="px-7 pb-6 text-slate text-sm leading-relaxed">Yes. All beta testers get full access at no cost. Free during beta. Founding Angler pricing coming soon.</p>
+            <p class="px-7 pb-6 text-slate text-sm leading-relaxed">$8.99 per month or $59.99 per year, with a 7-day free trial. Your subscription renews automatically until you cancel. Cancel anytime in the App Store or Google Play.</p>
           </div>
         </div>
       </div>
@@ -1160,7 +1177,7 @@
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
         </a>
       </div>
-      <p class="fade-up text-stone-50/50 text-sm">Free during beta &middot; Founding Angler pricing coming soon</p>
+      <p class="fade-up text-stone-50/50 text-sm">7-day free trial &middot; $8.99/month or $59.99/year &middot; Cancel anytime</p>
     </div>
   </section>
   </main>
@@ -1190,14 +1207,14 @@
         </div>
         <div>
           <h4 class="text-xs uppercase tracking-widest text-stone-50/40 font-semibold mb-4">Legal</h4>
-          <a href="/privacy.html" class="block text-sm text-stone-50/60 hover:text-stone-50 transition-colors py-1">Privacy Policy</a>
-          <a href="/terms.html" class="block text-sm text-stone-50/60 hover:text-stone-50 transition-colors py-1">Terms of Service</a>
+          <a href="/privacy" class="block text-sm text-stone-50/60 hover:text-stone-50 transition-colors py-1">Privacy Policy</a>
+          <a href="/terms" class="block text-sm text-stone-50/60 hover:text-stone-50 transition-colors py-1">Terms of Service</a>
           <a href="/delete-account" class="block text-sm text-stone-50/60 hover:text-stone-50 transition-colors py-1">Delete Account</a>
-          <a href="mailto:support@slabhaul.ai" class="block text-sm text-stone-50/60 hover:text-stone-50 transition-colors py-1">Contact</a>
+          <a href="/support" class="block text-sm text-stone-50/60 hover:text-stone-50 transition-colors py-1">Support</a>
         </div>
       </div>
       <div class="pt-8 border-t border-stone-50/5 text-center">
-        <p class="text-stone-50/30 text-xs">&copy; 2026 SlabHaul. A Velocity Venture Holdings product.</p>
+        <p class="text-stone-50/30 text-xs">&copy; 2026 SlabHaul. Sold by Velocity Venture Holdings, LLC, 1921 Tate Road, Drummonds, TN 38023.</p>
       </div>
     </div>
   </footer>
