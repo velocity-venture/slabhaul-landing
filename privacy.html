@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Privacy Policy: SlabHaul</title>
-  <meta name="description" content="SlabHaul privacy policy. How we collect, use, and protect your data.">
+  <meta name="description" content="SlabHaul privacy policy. What the app collects, what is sent to our AI services, who we share data with, and how to delete your account.">
+  <link rel="canonical" href="https://slabhaul.ai/privacy">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" href="/favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -34,10 +35,13 @@
     .updated { color: #64748b; font-size: 0.85rem; margin-bottom: 40px; }
     .content h2 { font-size: 1.3rem; font-weight: 700; margin-top: 40px; margin-bottom: 12px; color: #00d4aa; }
     .content p, .content li { color: #94a3b8; font-size: 0.95rem; margin-bottom: 12px; }
-    .content ul { padding-left: 24px; margin-bottom: 16px; }
+    .content ul, .content ol { padding-left: 24px; margin-bottom: 16px; }
     .content li { margin-bottom: 6px; }
-    .content strong { color: #e2e8f0; }
+    .content strong, .content a { color: #e2e8f0; }
     footer { padding: 40px 0; border-top: 1px solid rgba(255,255,255,0.08); text-align: center; color: #64748b; font-size: 0.8rem; }
+    footer nav a { color: #94a3b8; text-decoration: none; margin: 0 8px; }
+    footer nav a:hover { color: #e2e8f0; }
+    footer nav { margin-bottom: 12px; }
   </style>
 </head>
 <body>
@@ -47,68 +51,108 @@
       <a href="/" class="back">&larr; Back to home</a>
     </div>
   </header>
-  <div class="content">
+  <main class="content">
     <div class="container">
       <h1>Privacy Policy</h1>
-      <p class="updated">Last updated: March 4, 2026</p>
+      <p class="updated">Last updated: November 27, 2026</p>
 
-      <p>SlabHaul ("we," "our," or "us") is operated by Velocity Venture Holdings. This Privacy Policy describes how we collect, use, and share information when you use the SlabHaul mobile application and website (collectively, the "Service").</p>
+      <p>SlabHaul is a crappie fishing app for iPhone and Android, plus this website. It is run by Velocity Venture Holdings, LLC ("we," "us," "our"). This policy explains what we collect, why we collect it, who we share it with, and how you can delete it.</p>
 
-      <h2>Information We Collect</h2>
-      <p><strong>Account Information:</strong> When you create an account, we collect your email address and authentication credentials. If you sign in with Google or Apple, we receive your name and email from those providers.</p>
-      <p><strong>Usage Data:</strong> We collect information about how you use the Service, including features accessed, lakes viewed, and trip logs you create.</p>
-      <p><strong>Location Data:</strong> With your permission, we collect your device's location to provide lake-specific conditions, weather data, and navigation to fish attractor locations. You can disable location access in your device settings.</p>
-      <p><strong>Device Information:</strong> We collect device type, operating system version, and app version for troubleshooting and improving the Service.</p>
-
-      <h2>How We Use Your Information</h2>
+      <h2>The short version</h2>
       <ul>
-        <li>Provide and maintain the Service, including real-time lake conditions and attractor maps</li>
-        <li>Personalize your experience with location-specific data</li>
-        <li>Process your subscription and manage your account</li>
-        <li>Send you important updates about the Service</li>
-        <li>Improve the Service based on usage patterns</li>
-        <li>Respond to your support requests</li>
+        <li>You can use SlabHaul in guest mode without an account.</li>
+        <li>Nothing is sent to an AI service until you say yes. You can change your mind any time in Profile.</li>
+        <li>We do not use analytics or crash reporting tools.</li>
+        <li>Your trips, fishing profile and notes stay on your phone unless you use an AI feature that needs them.</li>
+        <li>You can delete your account in the app or by email.</li>
       </ul>
 
-      <h2>Data Storage and Security</h2>
-      <p>Your data is stored securely using Supabase (hosted on AWS). We use industry-standard encryption for data in transit and at rest. Authentication is handled through secure OAuth protocols.</p>
-
-      <h2>Third-Party Services</h2>
-      <p>We use the following third-party services to provide the Service:</p>
+      <h2>What we collect</h2>
       <ul>
-        <li><strong>Supabase</strong>: Authentication and data storage</li>
-        <li><strong>Open-Meteo</strong>: Weather data (no personal data shared)</li>
-        <li><strong>USGS Water Services</strong>: Water level data (no personal data shared)</li>
-        <li><strong>OpenStreetMap</strong>: Map tiles (no personal data shared)</li>
-        <li><strong>Formspree</strong>: Waitlist email collection</li>
+        <li><strong>Email address.</strong> Only if you create an account. You sign in with your email and a password. An account is optional. Guest mode works without one, but AI features and posting bait reports need an account.</li>
+        <li><strong>Precise location.</strong> Only when you tag a bait report with a location. We do not collect your location at any other time.</li>
+        <li><strong>Bait reports.</strong> The bait, catch details and notes you enter, and the location you tag. A bait report needs a location tag.</li>
+        <li><strong>Saved items.</strong> Your favorites, presets and tournament bookmarks.</li>
+        <li><strong>AI reports.</strong> If you report an AI answer, we save that answer and your report so we can review it.</li>
+        <li><strong>AI usage counts.</strong> How many AI requests you make, how long they are, and when. These counts do not include what you asked or what the AI answered.</li>
+        <li><strong>Purchase history.</strong> Once subscriptions are live, we receive a record of your subscription from the App Store or Google Play, through RevenueCat, such as your plan, status and renewal dates. We never see your card or payment details.</li>
       </ul>
 
-      <h2>Data Retention</h2>
-      <p>We retain your account data for as long as your account is active. Trip logs and analytics data are retained for your benefit and can be deleted at your request. If you delete your account, we will remove your personal data within 30 days.</p>
+      <h2>What stays on your phone</h2>
+      <p>Your trips, fishing profile and learned notes are stored on your device. They are only sent off your device as part of an AI request you make, as described below. If you delete the app, this data is deleted from your phone.</p>
 
-      <h2>Your Rights</h2>
-      <p>You have the right to:</p>
+      <h2>Public bait reports</h2>
+      <p>Other anglers can see bait reports. A public report shows the bait, the report details and your notes, with an approximate area of about 1 mile. It does not show your exact location, your email or your user ID.</p>
+
+      <h2>Uncle Slab and other AI features</h2>
+      <p>Uncle Slab and every other AI feature in SlabHaul use two outside AI services. <strong>Groq</strong> answers. <strong>Cloudflare Workers AI</strong> is the backup and answers only when Groq is unavailable. We do not use any other AI service.</p>
       <ul>
-        <li>Access the personal data we hold about you</li>
-        <li>Request correction of inaccurate data</li>
-        <li>Request deletion of your data</li>
-        <li>Export your trip log and catch data</li>
-        <li>Opt out of non-essential communications</li>
+        <li><strong>You choose first.</strong> Nothing is sent to Groq or Cloudflare until you allow it on a one-time consent screen that names both. You can withdraw consent any time in Profile. After that, nothing more is sent.</li>
+        <li><strong>What is sent.</strong> The same thing goes to Groq, or to Cloudflare when it is the backup. Your question and the recent messages in that conversation, plus context about the lake and current conditions. To personalize answers, your fishing profile and learned notes may also be sent. This is covered by the same one-time AI permission, which you can withdraw in Profile. If you ask for a trip summary, trip insights or a trip plan, the trip and catch details needed for that answer are sent. Your name, email and GPS location are not sent.</li>
+        <li><strong>No training.</strong> Neither Groq nor Cloudflare uses this data to train its models.</li>
+        <li><strong>No retention.</strong> Zero data retention is turned on in our Groq account. Cloudflare Workers AI does not keep what we send, or the answer, after the request is finished.</li>
+        <li><strong>Reported answers.</strong> If you report an AI answer, we save it for review, as described above.</li>
+      </ul>
+      <p>AI answers are for information only and can be wrong. See our <a href="/terms">Terms of Service</a>.</p>
+
+      <h2>How we use your information</h2>
+      <ul>
+        <li>To run the app, including signing you in and saving your favorites, presets and bookmarks</li>
+        <li>To show bait reports to other anglers, using only an approximate area</li>
+        <li>To answer your AI questions after you allow it</li>
+        <li>To review reported AI answers and make answers safer and more accurate</li>
+        <li>To apply fair use limits on AI features</li>
+        <li>To manage your subscription once subscriptions are live</li>
+        <li>To answer your support emails</li>
       </ul>
 
-      <h2>Children's Privacy</h2>
-      <p>The Service is not directed to children under 13. We do not knowingly collect personal information from children under 13.</p>
+      <h2>Who we share it with</h2>
+      <p>We share information only with the services that help us run SlabHaul:</p>
+      <ul>
+        <li><strong>Supabase:</strong> sign-in and storage for the account data listed above</li>
+        <li><strong>Groq:</strong> AI answers, only after you allow it</li>
+        <li><strong>Cloudflare Workers AI:</strong> backup for AI answers, used only when Groq is unavailable and only after you allow it</li>
+        <li><strong>Apple and Google:</strong> subscriptions and payments through the App Store and Google Play</li>
+        <li><strong>RevenueCat:</strong> keeps track of your subscription status, using your account ID</li>
+        <li><strong>Weather, water and map services</strong> (Open-Meteo, USGS, NOAA and Esri maps) and <strong>Google Fonts</strong>: the app asks them for lake data, map tiles and fonts. Like any website, they can see your device's internet address. These requests do not include your email or account.</li>
+      </ul>
+      <p>We may also share information if the law requires it.</p>
 
-      <h2>Changes to This Policy</h2>
-      <p>We may update this Privacy Policy from time to time. We will notify you of significant changes by email or through the Service.</p>
+      <h2>No analytics or crash reporting</h2>
+      <p>The app does not include analytics, advertising or crash reporting tools. This website does not use analytics or advertising tools either.</p>
 
-      <h2>Contact Us</h2>
-      <p>If you have questions about this Privacy Policy or want to delete your account, contact us at <strong>support@slabhaul.ai</strong>.</p>
+      <h2>How long we keep it</h2>
+      <p>We keep your account data while your account is open. When you delete your account, we delete your personal data within 30 days. Apple, Google and RevenueCat keep their own purchase records under their own policies.</p>
+
+      <h2>Deleting your account</h2>
+      <p>In the app, go to <strong>Profile</strong>, then <strong>Privacy</strong>, then <strong>Delete account</strong>. If you can no longer open the app, email <a href="mailto:support@slabhaul.ai?subject=Delete%20my%20SlabHaul%20account">support@slabhaul.ai</a> from the email on your account. Full steps are on our <a href="/delete-account">account deletion page</a>.</p>
+      <p><strong>Deleting your account does not cancel a subscription.</strong> Cancel it in the App Store or Google Play first, or you may keep being charged.</p>
+      <p>In guest mode there is no account to delete. Your data is only on your phone, and deleting the app removes it.</p>
+
+      <h2>Your choices</h2>
+      <ul>
+        <li>Withdraw AI consent any time in Profile.</li>
+        <li>Turn off location access in your phone's settings. You will not be able to tag bait reports while it is off.</li>
+        <li>Email us to ask for a copy of your data, to fix something, or to delete it.</li>
+      </ul>
+
+      <h2>Security</h2>
+      <p>Data sent between the app and our servers is encrypted. We limit who can access stored data.</p>
+
+      <h2>Children</h2>
+      <p>SlabHaul is not meant for children under 13. We do not knowingly collect personal information from children under 13. If you think a child has given us information, email us and we will delete it.</p>
+
+      <h2>Changes to this policy</h2>
+      <p>If we change this policy, we will update the date at the top. For important changes, we will also tell you in the app.</p>
+
+      <h2>Contact us</h2>
+      <p>Velocity Venture Holdings, LLC<br>1921 Tate Road<br>Drummonds, TN 38023<br>Email: <a href="mailto:support@slabhaul.ai">support@slabhaul.ai</a></p>
     </div>
-  </div>
+  </main>
   <footer>
     <div class="container">
-      <p>&copy; 2026 SlabHaul. A Velocity Venture Holdings product.</p>
+      <nav><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/support">Support</a><a href="/delete-account">Delete Account</a></nav>
+      <p>&copy; 2026 Velocity Venture Holdings, LLC</p>
     </div>
   </footer>
 </body>
